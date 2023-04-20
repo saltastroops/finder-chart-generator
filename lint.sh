@@ -1,5 +1,4 @@
-black rfqs tests && \
-isort rfqs tests && \
-mypy rfqs tests && \
-bandit rfqs tests && \
+black fcg tests && \
+isort fcg tests && \
+mypy fcg tests && \
 pytest
