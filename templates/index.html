@@ -6,8 +6,43 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Finder Chart Generator</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
-<h1 class="is-size-1 title">Finder Chart Generator</h1>
+<!-- navigation bar -->
+<nav class="navbar is-white has-shadow" role="navigation">
+    <div class="navbar-brand">
+        <a class="navbar-item" href="https://astronomers.salt.ac.za/">
+            <img src="/static/salt-logo.png" alt="SALT logo">
+        </a>
+    </div>
+</nav>
+
+<!-- main page content -->
+<div class="container mt-6">
+    <h1 class="is-size-1 title">Finder Chart Generator</h1>
+
+    <div id="form-tabs" class="tabs is-toggle is-toggle-rounded is-medium is-centered mt-6">
+        <ul>
+            <li data-target="longslit-form"><a>Longslit</a></li>
+            <li data-target="mos-form"><a>MOS</a></li>
+            <li data-target="hrs-form"><a>HRS</a></li>
+            <li data-target="nir-form"><a>NIR</a></li>
+            <li data-target="slotmode-form"><a>Slotmode</a></li>
+            <li data-target="imaging-form"><a>Imaging</a></li>
+        </ul>
+    </div>
+
+    <div id="tab-content" class="mt-5">
+        <div id="longslit-form">Longslit</div>
+        <div id="mos-form">MOS</div>
+        <div id="hrs-form">HRS</div>
+        <div id="nir-form">NIR</div>
+        <div id="slotmode-form">Slotmode</div>
+        <div id="imaging-form">Imaging</div>
+    </div>
+</div>
+
+<script src="/static/index.js"></script>
 </body>
 </html>

@@ -1,8 +1,11 @@
 from fastapi import FastAPI, Request, Response
+from fastapi.staticfiles import StaticFiles
 
 from infrastructure.jinja2 import templates
 
 app = FastAPI()
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
 @app.get("/")
