@@ -1,9 +1,9 @@
-from fastapi import FastAPI, Request, Response
+from fastapi import Request, Response, APIRouter
 
 from fcg.viewmodels.index_viewmodel import IndexViewModel
 from infrastructure.jinja2 import templates
 
-router = FastAPI()
+router = APIRouter()
 
 
 @router.get("/")

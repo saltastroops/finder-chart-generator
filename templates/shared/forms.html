@@ -1,0 +1,18 @@
+<!-- input field -->
+
+{% macro input(name, label, value, help="", error="") %}
+<div class="field">
+    <label for="{{ name }}" class="label">{{ label }}</label>
+    <div class="control">
+        <input id="{{ name }}" name="{{ name }}" value="{{ value }}"
+               placeholder="{{ placeholder }}"
+               class="input {% if error %}is-danger{% endif %}">
+    </div>
+    {% if help %}
+        <div class="help">{{ help }}</div>
+    {% endif %}
+    {% if error %}
+        <div class="help is-danger">{{ error }}</div>
+    {% endif %}
+</div>
+{% endmacro %}

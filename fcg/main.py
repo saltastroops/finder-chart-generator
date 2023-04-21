@@ -1,13 +1,11 @@
 from fastapi import FastAPI, Request, Response
 from fastapi.staticfiles import StaticFiles
 
-from infrastructure.jinja2 import templates
+from fcg.views import index
+
 
 app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-
-@app.get("/")
-def index(request: Request) -> Response:
-    return templates.TemplateResponse("index.html", {"request": request})
+app.include_router(index.router)
