@@ -24,28 +24,30 @@
 
     <div id="form-tabs" class="tabs is-toggle is-toggle-rounded is-medium is-centered mt-6">
         <ul>
-            <li data-target="longslit-form"><a>Longslit</a></li>
-            <li data-target="mos-form"><a>MOS</a></li>
-            <li data-target="hrs-form"><a>HRS</a></li>
-            <li data-target="nir-form"><a>NIR</a></li>
-            <li data-target="slotmode-form"><a>Slotmode</a></li>
-            <li data-target="imaging-form"><a>Imaging</a></li>
+            <li data-target="longslit_form"><a>Longslit</a></li>
+            <li data-target="mos_form"><a>MOS</a></li>
+            <li data-target="hrs_form"><a>HRS</a></li>
+            <li data-target="nir_form"><a>NIR</a></li>
+            <li data-target="slotmode_form"><a>Slotmode</a></li>
+            <li data-target="imaging_form"><a>Imaging</a></li>
         </ul>
     </div>
 
     <div id="tab-content" class="mt-5">
-        <div id="longslit-form">
+        <div id="longslit_form">
             {% include "forms/longslit.html" %}
         </div>
-        <div id="mos-form">
+        <div id="mos_form">
             {% include "forms/mos.html" %}
         </div>
-        <div id="hrs-form">
+        <div id="hrs_form">
             {% include "forms/hrs.html" %}
         </div>
-        <div id="nir-form">NIR</div>
-        <div id="slotmode-form">Slotmode</div>
-        <div id="imaging-form">Imaging</div>
+        <div id="nir_form">NIR</div>
+        <div id="slotmode_form">
+            {% include "forms/slotmode.html" %}
+        </div>
+        <div id="imaging_form">Imaging</div>
     </div>
 </div>
 
