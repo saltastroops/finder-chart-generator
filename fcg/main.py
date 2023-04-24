@@ -1,8 +1,7 @@
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
 from fcg.views import index
-
 
 app = FastAPI()
 

@@ -1,4 +1,4 @@
-from fastapi import Request, Response, APIRouter
+from fastapi import APIRouter, Request, Response
 
 from fcg.viewmodels.index_viewmodel import IndexViewModel
 from infrastructure.jinja2 import templates
