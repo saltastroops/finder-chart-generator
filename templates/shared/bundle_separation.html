@@ -1,0 +1,7 @@
+{% import "shared/forms.html" as forms %}
+
+{{ forms.input(name="bundle_separation",
+               label="Bundle separation",
+               value=science_bundle_separation,
+               help="Separation between the science and sky bundle, in arcseconds",
+               error=errors.get("science_bundle_separation", "")) }}
