@@ -1,18 +1,43 @@
-<!-- input field -->
+<!-- text input field -->
 
 {% macro input(name, label, value, help="", error="") %}
-<div class="field">
-    <label for="{{ name }}" class="label">{{ label }}</label>
-    <div class="control">
-        <input id="{{ name }}" name="{{ name }}" value="{{ value }}"
-               placeholder="{{ placeholder }}"
-               class="input {% if error %}is-danger{% endif %}">
+    <div class="field">
+        <label for="{{ name }}" class="label">{{ label }}</label>
+        <div class="control">
+            <input id="{{ name }}" name="{{ name }}" value="{{ value }}"
+                   placeholder="{{ placeholder }}"
+                   class="input {% if error %}is-danger{% endif %}">
+        </div>
+        {% if help %}
+            <div class="help">{{ help }}</div>
+        {% endif %}
+        {% if error %}
+            <div class="help is-danger">{{ error }}</div>
+        {% endif %}
     </div>
-    {% if help %}
-        <div class="help">{{ help }}</div>
-    {% endif %}
-    {% if error %}
-        <div class="help is-danger">{{ error }}</div>
-    {% endif %}
-</div>
+{% endmacro %}
+
+<!-- file input field -->
+
+{% macro file_input(name, label, button_label, help="", error="") %}
+    <div class="field">
+        <label class="label">{{ label }}</label>
+        <div class="control">
+            <label class="file-label">
+                <input id="{{ name }}" name="{{ name }}" type="file" class="file-input">
+                <span class="file-cta">
+                <span class="file-icon">
+                    <i class="fas fa-upload"></i>
+                </span>
+                <span class="file-label">{{ button_label }}</span>
+            </span>
+            </label>
+        </div>
+         {% if help %}
+            <div class="help">{{ help }}</div>
+        {% endif %}
+        {% if error %}
+            <div class="help is-danger">{{ error }}</div>
+        {% endif %}
+   </div>
 {% endmacro %}
