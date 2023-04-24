@@ -1,0 +1,46 @@
+{% import "shared/forms.html" as forms %}
+
+<div id="fits_controls" class="field">
+    <label class="label">Background image</label>
+    <div class="control">
+        <label class="radio">
+            <input name="fits_selection" data-target="image_survey_element" class="radio" type="radio" checked>
+            Generate from an image survey
+        </label>
+        <label class="radio">
+            <input name="fits_selection" data-target="custom_fits_element" class="radio" type="radio">
+            Choose a custom FITS file
+        </label>
+    </div>
+</div>
+
+<div id="fits_option">
+    <div id="image_survey_element">
+        <div class="field">
+            <label for="image_survey" class="label">Image survey</label>
+            <div class="control">
+                <div class="select">
+                    <select id="image_survey" name="image_survey">
+                        <option value="POSS2/UKSTU Red">POSS2/UKSTU Red</option>
+                        <option value="POSS2/UKSTU Blue">POSS2/UKSTU Blue</option>
+                        <option value="POSS2/UKSTU IR">POSS2/UKSTU IR</option>
+                        <option value="POSS1 Red">POSS1 Red</option>
+                        <option value="POSS1 Blue">POSS1 Blue</option>
+                        <option value="2MASS-J">2MASS-J</option>
+                        <option value="2MASS-H">2MASS-H</option>
+                        <option value="2MASS-K">2MASS-K</option>
+                    </select>
+                </div>
+            </div>
+            <div class="help">Choose the image server to use for generating the background image</div>
+        </div>
+    </div>
+
+    <div id="custom_fits_element">
+        {{ forms.file_input(name="custom_fits",
+                        label="Custom FITS file",
+                        button_label="Choose a FITS file...",
+                        help="Choose a custom FITS file to use as the background image",
+                        error=errors.get("custom_fits", "")) }}
+    </div>
+</div>
