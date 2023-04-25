@@ -3,5 +3,5 @@
 {{ forms.input(name="bundle_separation",
                label="Bundle separation",
                value=science_bundle_separation,
-               help="Separation between the science and sky bundle, in arcseconds",
+               help="Angle between 54 and 165 arcseconds, as a float in arcseconds or in a format which AstroPy can parse",
                error=errors.get("science_bundle_separation", "")) }}

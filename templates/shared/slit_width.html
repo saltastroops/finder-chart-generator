@@ -1,5 +1,5 @@
 {{ forms.input(name="slit_width",
                label="Slit width",
                value=slit_width,
-               help="Angle in arcseconds",
+               help="Angle between 0.5 and 5 arcseconds, as a float in arcseconds or in a format which AstroPy can parse",
                error=errors.get("slit_width")) }}
