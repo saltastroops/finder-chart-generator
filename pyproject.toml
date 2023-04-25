@@ -11,6 +11,8 @@ python = "^3.10"
 fastapi = "^0.95.1"
 uvicorn = {extras = ["standard"], version = "^0.21.1"}
 jinja2 = "^3.1.2"
+astropy = "^5.2.2"
+python-multipart = "^0.0.6"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -26,3 +28,6 @@ httpx = "^0.24.0"
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
