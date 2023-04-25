@@ -1,7 +1,7 @@
 {% import "shared/forms.html" as forms %}
 
-{{ forms.input(name="bundle_separation",
+{{ forms.input(name="nir_bundle_separation",
                label="Bundle separation",
-               value=science_bundle_separation,
+               value=nir_bundle_separation,
                help="Angle between 54 and 165 arcseconds, as a float in arcseconds or in a format which AstroPy can parse",
-               error=errors.get("science_bundle_separation", "")) }}
+               error=errors.get("nir_bundle_separation", "")) }}

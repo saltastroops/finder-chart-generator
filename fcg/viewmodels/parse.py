@@ -83,10 +83,64 @@ def parse_position_angle(form: FormData, errors: dict[str, str]) -> Angle | None
     )
 
 
+def parse_mos_mask_file(form: FormData, errors: dict[str, str]) -> UploadFile | None:
+    missing_error = "The MOS mask file is missing."
+    if "mos_mask_file" not in form:
+        errors["mos_mask_file"] = missing_error
+        return None
+    mos_mask_file = cast(UploadFile, form["mos_mask_file"])
+    if mos_mask_file.size == 0:
+        errors["mos_mask_file"] = missing_error
+        return None
+    return mos_mask_file
+
+
+def parse_science_bundle_right_ascension(
+    form: FormData, errors: dict[str, str]
+) -> Angle | None:
+    return parse.parse_generic_form_field(
+        form=form,
+        field="science_bundle_right_ascension",
+        parse_func=parse.parse_right_ascension,
+        missing_message="The right ascension of the science bundle is missing.",
+        error_id="science_bundle_right_ascension",
+        errors=errors,
+    )
+
+
+def parse_science_bundle_declination(
+    form: FormData, errors: dict[str, str]
+) -> Angle | None:
+    return parse.parse_generic_form_field(
+        form=form,
+        field="science_bundle_declination",
+        parse_func=parse.parse_declination,
+        missing_message="The declination of the science bundle is missing.",
+        error_id="science_bundle_declination",
+        errors=errors,
+    )
+
+
+def parse_nir_bundle_separation(form: FormData, errors: dict[str, str]) -> Angle | None:
+    return parse.parse_generic_form_field(
+        form=form,
+        field="nir_bundle_separation",
+        parse_func=parse.parse_nir_bundle_separation,
+        missing_message="The bundle separation is missing.",
+        error_id="nir_bundle_separation",
+        errors=errors,
+    )
+
+
 def parse_background_image(
     form: FormData, errors: dict[str, str]
 ) -> str | UploadFile | None:
-    if "image_survey" in form:
+    if "image_survey" in form and "custom_fits" in form:
+        errors[
+            "__general"
+        ] = "The image survey and custom FITS file are mutually exclusive."
+        return None
+    elif "image_survey" in form:
         if form.get("image_survey"):
             return form.get("image_survey")
         else:
