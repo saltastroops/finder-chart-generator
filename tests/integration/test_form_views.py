@@ -290,3 +290,16 @@ def test_background_image_errors(url: str, client: TestClient) -> None:
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert "mutually exclusive" in errors["__general"]
+
+    # the image survey does not cover the position on the sky
+    response = client.post(
+        url,
+        data={
+            "image_survey": "POSS1 Red",
+            "right_ascension": "1",
+            "declination": "-50",
+        },
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    errors = response.json()["errors"]
+    assert "cover" in errors["image_survey"]

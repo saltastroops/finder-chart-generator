@@ -1,6 +1,7 @@
 from typing import cast
 
-from astropy.coordinates import Angle
+from astropy.coordinates import Angle, SkyCoord
+from imephu.service.survey import is_covering_position
 from starlette.datastructures import FormData, UploadFile
 
 from infrastructure import parse
@@ -142,7 +143,15 @@ def parse_background_image(
         return None
     elif "image_survey" in form:
         if form.get("image_survey"):
-            return form.get("image_survey")
+            survey = form.get("image_survey")
+            if _is_position_covered_by_survey(form, survey):
+                return survey
+            else:
+                errors["image_survey"] = (
+                    "The image survey does not cover the selected right ascension "
+                    "and declination."
+                )
+                return None
         else:
             errors["image_survey"] = "The image survey is missing."
             return None
@@ -155,3 +164,12 @@ def parse_background_image(
     else:
         errors["__general"] = "An image survey or a custom FITS file must be supplied."
         return None
+
+
+def _is_position_covered_by_survey(form: FormData, survey: str) -> bool:
+    try:
+        right_ascension = parse.parse_right_ascension(form.get("right_ascension", ""))
+        declination = parse.parse_declination(form.get("declination", ""))
+    except ValueError:
+        return True
+    return is_covering_position(survey, SkyCoord(ra=right_ascension, dec=declination))
