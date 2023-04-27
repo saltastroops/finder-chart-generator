@@ -5,7 +5,29 @@ from fastapi.testclient import TestClient
 from starlette import status
 
 
-def test_hrs_viewmodel_with_missing_values(client: TestClient):
+_URL = "/finder-charts"
+
+
+@pytest.mark.parametrize("mode", ["", "invalid"])
+def test_generate_for_invalid_mode(mode: str, client: TestClient) -> None:
+    response = client.post(
+        _URL, params={"mode": mode}, data={"imaging_survey": "POSS1 Red"}
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    errors = response.json()["errors"]
+    assert "mode" in errors["__general"]
+
+
+@pytest.mark.parametrize("mode", ["MOS", "imaging", "LongSlit"])
+def test_mode_is_case_insensitive(mode: str, client: TestClient) -> None:
+    response = client.post(
+        _URL, params={"mode": mode}, data={"image_survey": "POSS1 Red"}
+    )
+    errors = response.json()["errors"]
+    assert "__general" not in errors
+
+
+def test_generate_for_hrs_with_missing_values(client: TestClient):
     missing_values = [
         ("proposal_code", "proposal code"),
         ("principal_investigator", "Principal Investigator"),
@@ -15,7 +37,7 @@ def test_hrs_viewmodel_with_missing_values(client: TestClient):
         ("position_angle", "position angle"),
     ]
 
-    response = client.post("/hrs", data=dict())
+    response = client.post(_URL, params={"mode": "hrs"}, data=dict())
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
@@ -23,7 +45,7 @@ def test_hrs_viewmodel_with_missing_values(client: TestClient):
         assert missing_info in errors[field]
 
 
-def test_hrs(client: TestClient) -> None:
+def test_generate_for_hrs(client: TestClient) -> None:
     data = {
         "proposal_code": "2023-1-SCI-042",
         "principal_investigator": "Adams",
@@ -33,11 +55,11 @@ def test_hrs(client: TestClient) -> None:
         "position_angle": "0",
         "image_survey": "POSS2/UKSTU Red",
     }
-    response = client.post("/hrs", data=data)
+    response = client.post(_URL, params={"mode": "hrs"}, data=data)
     assert response.status_code == status.HTTP_200_OK
 
 
-def test_imaging_viewmodel_with_missing_values(client: TestClient):
+def test_generate_for_imaging_with_missing_values(client: TestClient):
     missing_values = [
         ("proposal_code", "proposal code"),
         ("principal_investigator", "Principal Investigator"),
@@ -47,7 +69,7 @@ def test_imaging_viewmodel_with_missing_values(client: TestClient):
         ("position_angle", "position angle"),
     ]
 
-    response = client.post("/imaging", data=dict())
+    response = client.post(_URL, params={"mode": "imaging"}, data=dict())
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
@@ -55,7 +77,7 @@ def test_imaging_viewmodel_with_missing_values(client: TestClient):
         assert missing_info in errors[field]
 
 
-def test_imaging(client: TestClient) -> None:
+def test_generate_for_imaging(client: TestClient) -> None:
     data = {
         "proposal_code": "2023-1-SCI-042",
         "principal_investigator": "Adams",
@@ -65,11 +87,11 @@ def test_imaging(client: TestClient) -> None:
         "position_angle": "0",
         "image_survey": "POSS2/UKSTU Red",
     }
-    response = client.post("/imaging", data=data)
+    response = client.post(_URL, params={"mode": "imaging"}, data=data)
     assert response.status_code == status.HTTP_200_OK
 
 
-def test_longslit_viewmodel_with_missing_values(client: TestClient):
+def test_generate_for_longslit_with_missing_values(client: TestClient):
     missing_values = [
         ("proposal_code", "proposal code"),
         ("principal_investigator", "Principal Investigator"),
@@ -80,7 +102,7 @@ def test_longslit_viewmodel_with_missing_values(client: TestClient):
         ("position_angle", "position angle"),
     ]
 
-    response = client.post("/longslit", data=dict())
+    response = client.post(_URL, params={"mode": "longslit"}, data=dict())
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
@@ -88,7 +110,7 @@ def test_longslit_viewmodel_with_missing_values(client: TestClient):
         assert missing_info in errors[field]
 
 
-def test_longslit(client: TestClient) -> None:
+def test_generate_for_longslit(client: TestClient) -> None:
     data = {
         "proposal_code": "2023-1-SCI-042",
         "principal_investigator": "Adams",
@@ -99,11 +121,11 @@ def test_longslit(client: TestClient) -> None:
         "position_angle": "0",
         "image_survey": "POSS2/UKSTU Red",
     }
-    response = client.post("/longslit", data=data)
+    response = client.post(_URL, params={"mode": "longslit"}, data=data)
     assert response.status_code == status.HTTP_200_OK
 
 
-def test_mos_viewmodel_with_missing_values(client: TestClient):
+def test_generate_for_mos_with_missing_values(client: TestClient):
     missing_values = [
         ("proposal_code", "proposal code"),
         ("principal_investigator", "Principal Investigator"),
@@ -111,7 +133,7 @@ def test_mos_viewmodel_with_missing_values(client: TestClient):
         ("mos_mask_file", "MOS mask file"),
     ]
 
-    response = client.post("/mos", data=dict())
+    response = client.post(_URL, params={"mode": "mos"}, data=dict())
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
@@ -119,7 +141,7 @@ def test_mos_viewmodel_with_missing_values(client: TestClient):
         assert missing_info in errors[field]
 
 
-def test_mos(client: TestClient) -> None:
+def test_generate_for_mos(client: TestClient) -> None:
     data = {
         "proposal_code": "2023-1-SCI-042",
         "principal_investigator": "Adams",
@@ -128,11 +150,11 @@ def test_mos(client: TestClient) -> None:
         "image_survey": "POSS2/UKSTU Red",
     }
     files = {"mos_mask_file": BytesIO(b"FITS")}
-    response = client.post("/mos", data=data, files=files)
+    response = client.post(_URL, params={"mode": "mos"}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
 
 
-def test_nir_viewmodel_with_missing_values(client: TestClient):
+def test_generate_for_nir_with_missing_values(client: TestClient):
     missing_values = [
         ("proposal_code", "proposal code"),
         ("principal_investigator", "Principal Investigator"),
@@ -145,7 +167,7 @@ def test_nir_viewmodel_with_missing_values(client: TestClient):
         ("position_angle", "position angle"),
     ]
 
-    response = client.post("/nir", data=dict())
+    response = client.post(_URL, params={"mode": "nir"}, data=dict())
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
@@ -153,7 +175,7 @@ def test_nir_viewmodel_with_missing_values(client: TestClient):
         assert missing_info in errors[field]
 
 
-def test_nir(client: TestClient) -> None:
+def test_generate_for_nir(client: TestClient) -> None:
     data = {
         "proposal_code": "2023-1-SCI-042",
         "principal_investigator": "Adams",
@@ -166,11 +188,11 @@ def test_nir(client: TestClient) -> None:
         "position_angle": "0",
         "image_survey": "POSS2/UKSTU Red",
     }
-    response = client.post("/nir", data=data)
+    response = client.post(_URL, params={"mode": "nir"}, data=data)
     assert response.status_code == status.HTTP_200_OK
 
 
-def test_slotmode_viewmodel_with_missing_values(client: TestClient):
+def test_generate_for_slotmode_with_missing_values(client: TestClient):
     missing_values = [
         ("proposal_code", "proposal code"),
         ("principal_investigator", "Principal Investigator"),
@@ -180,7 +202,7 @@ def test_slotmode_viewmodel_with_missing_values(client: TestClient):
         ("position_angle", "position angle"),
     ]
 
-    response = client.post("/slotmode", data=dict())
+    response = client.post(_URL, params={"mode": "slotmode"}, data=dict())
 
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
@@ -188,7 +210,7 @@ def test_slotmode_viewmodel_with_missing_values(client: TestClient):
         assert missing_info in errors[field]
 
 
-def test_slotmode(client: TestClient) -> None:
+def test_generate_for_slotmode(client: TestClient) -> None:
     data = {
         "proposal_code": "2023-1-SCI-042",
         "principal_investigator": "Adams",
@@ -198,32 +220,32 @@ def test_slotmode(client: TestClient) -> None:
         "position_angle": "0",
         "image_survey": "POSS2/UKSTU Red",
     }
-    response = client.post("/slotmode", data=data)
+    response = client.post(_URL, params={"mode": "slotmode"}, data=data)
     assert response.status_code == status.HTTP_200_OK
 
 
-@pytest.mark.parametrize("url", ["/hrs", "/imaging", "/longslit", "/slotmode", "/nir"])
+@pytest.mark.parametrize("mode", ["hrs", "imaging", "longslit", "slotmode", "nir"])
 @pytest.mark.parametrize("value", ["invalid", "-0.1", "360.1"])
-def test_invalid_right_ascension(url: str, value: str, client: TestClient) -> None:
-    response = client.post(url, data={"right_ascension": value})
+def test_invalid_right_ascension(mode: str, value: str, client: TestClient) -> None:
+    response = client.post(_URL, params={"mode": mode}, data={"right_ascension": value})
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert "360" in errors["right_ascension"]
 
 
-@pytest.mark.parametrize("url", ["/hrs", "/imaging", "/longslit", "/slotmode", "/nir"])
+@pytest.mark.parametrize("mode", ["hrs", "imaging", "longslit", "slotmode", "nir"])
 @pytest.mark.parametrize("value", ["invalid", "-90.1", "90.1"])
-def test_invalid_declination(url: str, value: str, client: TestClient) -> None:
-    response = client.post(url, data={"declination": value})
+def test_invalid_declination(mode: str, value: str, client: TestClient) -> None:
+    response = client.post(_URL, params={"mode": mode}, data={"declination": value})
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert "90" in errors["declination"]
 
 
-@pytest.mark.parametrize("url", ["/hrs", "/imaging", "/longslit", "/slotmode", "/nir"])
+@pytest.mark.parametrize("mode", ["hrs", "imaging", "longslit", "slotmode", "nir"])
 @pytest.mark.parametrize("value", ["invalid", "-180.1", "180.1"])
-def test_invalid_position_angle(url: str, value: str, client: TestClient) -> None:
-    response = client.post(url, data={"position_angle": value})
+def test_invalid_position_angle(mode: str, value: str, client: TestClient) -> None:
+    response = client.post(_URL, params={"mode": mode}, data={"position_angle": value})
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert "180" in errors["position_angle"]
@@ -231,7 +253,9 @@ def test_invalid_position_angle(url: str, value: str, client: TestClient) -> Non
 
 @pytest.mark.parametrize("value", ["invalid", "0.49", "5.1"])
 def test_invalid_slit_width(value: str, client: TestClient) -> None:
-    response = client.post("/longslit", data={"slit_width": value})
+    response = client.post(
+        _URL, params={"mode": "longslit"}, data={"slit_width": value}
+    )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert "0.5" in errors["slit_width"]
@@ -239,7 +263,9 @@ def test_invalid_slit_width(value: str, client: TestClient) -> None:
 
 @pytest.mark.parametrize("value", ["invalid", "-0.1", "360.1"])
 def test_invalid_science_bundle_right_ascension(value: str, client: TestClient) -> None:
-    response = client.post("/nir", data={"science_bundle_right_ascension": value})
+    response = client.post(
+        _URL, params={"mode": "nir"}, data={"science_bundle_right_ascension": value}
+    )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert "360" in errors["science_bundle_right_ascension"]
@@ -247,7 +273,9 @@ def test_invalid_science_bundle_right_ascension(value: str, client: TestClient) 
 
 @pytest.mark.parametrize("value", ["invalid", "-90.1", "90.1"])
 def test_invalid_science_bundle_declination(value: str, client: TestClient) -> None:
-    response = client.post("/nir", data={"science_bundle_declination": value})
+    response = client.post(
+        _URL, params={"mode": "nir"}, data={"science_bundle_declination": value}
+    )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert "90" in errors["science_bundle_declination"]
@@ -255,16 +283,20 @@ def test_invalid_science_bundle_declination(value: str, client: TestClient) -> N
 
 @pytest.mark.parametrize("value", ["invalid", "53.9", "165.1"])
 def test_invalid_nir_bundle_separation(value: str, client: TestClient) -> None:
-    response = client.post("/nir", data={"nir_bundle_separation": value})
+    response = client.post(
+        _URL, params={"mode": "nir"}, data={"nir_bundle_separation": value}
+    )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert "165" in errors["nir_bundle_separation"]
 
 
-@pytest.mark.parametrize("url", ["/hrs", "/imaging", "/longslit"])
-def test_background_image_errors(url: str, client: TestClient) -> None:
+@pytest.mark.parametrize(
+    "mode", ["hrs", "imaging", "longslit", "mos", "nir", "slotmode"]
+)
+def test_background_image_errors(mode: str, client: TestClient) -> None:
     # neither an image survey nor a custom FITS file given
-    response = client.post(url, data=dict())
+    response = client.post(_URL, params={"mode": mode}, data=dict())
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert (
@@ -272,20 +304,25 @@ def test_background_image_errors(url: str, client: TestClient) -> None:
     )
 
     # an empty image survey is given
-    response = client.post(url, data={"image_survey": ""})
+    response = client.post(_URL, params={"mode": mode}, data={"image_survey": ""})
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert "image_survey" in errors and "custom_fits" not in errors
 
     # an empty custom FITS file is given
-    response = client.post(url, files={"custom_fits": BytesIO(b"")})
+    response = client.post(
+        _URL, params={"mode": mode}, files={"custom_fits": BytesIO(b"")}
+    )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert "image_survey" not in errors and "custom_fits" in errors
 
     # both an image survey and a custom FITS file are given
     response = client.post(
-        url, data={"image_survey": ""}, files={"custom_fits": BytesIO(b"FITS")}
+        _URL,
+        params={"mode": mode},
+        data={"image_survey": ""},
+        files={"custom_fits": BytesIO(b"FITS")},
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
@@ -293,7 +330,8 @@ def test_background_image_errors(url: str, client: TestClient) -> None:
 
     # the image survey does not cover the position on the sky
     response = client.post(
-        url,
+        _URL,
+        params={"mode": mode},
         data={
             "image_survey": "POSS1 Red",
             "right_ascension": "1",

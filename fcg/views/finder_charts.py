@@ -12,8 +12,29 @@ from fcg.viewmodels.slotmode_viewmodel import SlotmodeViewModel
 router = APIRouter()
 
 
-@router.post("/hrs")
-async def hrs(request: Request) -> Response:
+@router.post("/finder-charts")
+async def generate_finder_chart(request: Request, mode: str) -> Response:
+    match mode.lower():
+        case "hrs":
+            return await _hrs(request)
+        case "imaging":
+            return await _imaging(request)
+        case "longslit":
+            return await _longslit(request)
+        case "mos":
+            return await _mos(request)
+        case "nir":
+            return await _nir(request)
+        case "slotmode":
+            return await _slotmode(request)
+        case _:
+            errors = {"__general": f"Unsupported finder chart generation mode: {mode}"}
+            return JSONResponse(
+                {"errors": errors}, status_code=status.HTTP_400_BAD_REQUEST
+            )
+
+
+async def _hrs(request: Request) -> Response:
     vm = HrsViewModel(request)
 
     await vm.load()
@@ -26,8 +47,7 @@ async def hrs(request: Request) -> Response:
     return JSONResponse({"success": True})
 
 
-@router.post("/imaging")
-async def hrs(request: Request) -> Response:
+async def _imaging(request: Request) -> Response:
     vm = ImagingViewModel(request)
 
     await vm.load()
@@ -40,8 +60,7 @@ async def hrs(request: Request) -> Response:
     return JSONResponse({"success": True})
 
 
-@router.post("/longslit")
-async def longslit(request: Request) -> Response:
+async def _longslit(request: Request) -> Response:
     vm = LongslitViewModel(request)
 
     await vm.load()
@@ -54,8 +73,7 @@ async def longslit(request: Request) -> Response:
     return JSONResponse({"success": True})
 
 
-@router.post("/mos")
-async def mos(request: Request) -> Response:
+async def _mos(request: Request) -> Response:
     vm = MosViewModel(request)
 
     await vm.load()
@@ -68,8 +86,7 @@ async def mos(request: Request) -> Response:
     return JSONResponse({"success": True})
 
 
-@router.post("/nir")
-async def mos(request: Request) -> Response:
+async def _nir(request: Request) -> Response:
     vm = NirViewModel(request)
 
     await vm.load()
@@ -82,8 +99,7 @@ async def mos(request: Request) -> Response:
     return JSONResponse({"success": True})
 
 
-@router.post("/slotmode")
-async def slotmode(request: Request) -> Response:
+async def _slotmode(request: Request) -> Response:
     vm = SlotmodeViewModel(request)
 
     await vm.load()
