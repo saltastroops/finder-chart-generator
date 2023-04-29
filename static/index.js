@@ -1,13 +1,39 @@
-const tabs = document.querySelectorAll("#form-tabs li");
+const tabs = [...document.querySelectorAll("#form-tabs li")];
+
+const tabContainer = document.querySelector("#tab-content");
+
+const tabContents = [...document.querySelectorAll("#tab-content > div")].reduce(
+        (prev, content, i) => ({...prev, [content.id]: content}), {});
 
 const fitsFileOptionElements = {
   image_survey_element: document.querySelector("#image_survey_element"),
   custom_fits_element: document.querySelector("#custom_fits_element")
 }
 
+const data = {}
+const errors = {}
+
+
 function switchTab(event) {
+  // Store the form data
+  const form = document.querySelector("form");
+  const formData = new FormData(form);
+  for (let e of formData.entries()) {
+    data[e[0]] = e[1];
+  }
+
   // Select the tab the user clicked on
   selectTab(event.currentTarget);
+
+  // Apply the previously saved form data
+  const inputElements = document.querySelectorAll(`input`);
+  for (let inputElement of inputElements) {
+    const name = inputElement.getAttribute("name");
+    const inputType = inputElement.getAttribute("type")
+    if (data[name] && ["text", "", null].includes(inputType)) {
+      inputElement.value = data[name];
+    }
+  }
 }
 
 function selectTab(selectedTab) {
@@ -23,11 +49,11 @@ function selectTab(selectedTab) {
 
 function displayTabContent(selectedTab) {
   // Hide all the tab content
-  document.querySelectorAll("#tab-content > div").forEach(e => e.classList.add("is-hidden"));
+  tabContainer.innerHTML = "";
 
   // show the content of the selected tab
   const target = selectedTab.dataset.target;
-  document.getElementById(target).classList.remove("is-hidden");
+  tabContainer.appendChild(tabContents[target]);
 }
 
 function switchFitsOption(event) {
