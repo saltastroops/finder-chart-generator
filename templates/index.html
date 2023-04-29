@@ -33,26 +33,34 @@
         </ul>
     </div>
 
-    <div id="tab-content" class="mt-5">
-        <div id="longslit_form">
-            {% include "forms/longslit.html" %}
+    <form>
+        <div id="tab-content" class="mt-5">
+            <div id="longslit_form">
+                {% include "forms/longslit.html" %}
+            </div>
+            <div id="mos_form">
+                {% include "forms/mos.html" %}
+            </div>
+            <div id="hrs_form">
+                {% include "forms/hrs.html" %}
+            </div>
+            <div id="nir_form">
+                {% include "forms/nir.html" %}
+            </div>
+            <div id="slotmode_form">
+                {% include "forms/slotmode.html" %}
+            </div>
+            <div id="imaging_form">
+                {% include "forms/imaging.html" %}
+            </div>
         </div>
-        <div id="mos_form">
-            {% include "forms/mos.html" %}
-        </div>
-        <div id="hrs_form">
-            {% include "forms/hrs.html" %}
-        </div>
-        <div id="nir_form">
-            {% include "forms/nir.html" %}
-        </div>
-        <div id="slotmode_form">
-            {% include "forms/slotmode.html" %}
-        </div>
-        <div id="imaging_form">
-            {% include "forms/imaging.html" %}
-        </div>
-    </div>
+
+        <!-- background image -->
+        {% include "shared/background_image.html" %}
+
+        <!-- submit -->
+        {% include "shared/submit.html" %}
+    </form>
 </div>
 
 <script src="/static/index.js"></script>
