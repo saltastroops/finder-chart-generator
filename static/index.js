@@ -74,6 +74,17 @@ function selectFitsOption(optionElementId) {
   optionElementContainer.appendChild(fitsFileOptionElements[optionElementId])
 }
 
+async function generateFinderChart(event) {
+  event.preventDefault();
+  const selectedTab = tabs.find(tab => tab.classList.contains("is-active"));
+  const target = selectedTab.dataset.target;
+  const mode = target.split("_form")[0];
+  const url = `/finder-charts?mode=${mode}`;
+  const formData = new FormData(event.target);
+  const response = await fetch(url, { method: "POST", body: formData });
+  console.log(mode, await response.json())
+}
+
 function init() {
   // Add an event listener to all the tabs
   tabs.forEach(tab => tab.addEventListener("click", switchTab));
@@ -81,6 +92,9 @@ function init() {
   // Add an event listener to the radio buttons for selecting the FITS file option
   document.querySelectorAll("#fits_controls input")
           .forEach(input => input.addEventListener("click", switchFitsOption));
+
+  // Add the event listener for generating the finder chart
+  document.querySelector("form").addEventListener("submit", generateFinderChart);
 
   // Select the first tab
   selectTab(tabs[0]);
