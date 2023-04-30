@@ -1,3 +1,11 @@
 .navbar-item img {
     max-height: 200px;
 }
+
+.is-vertically-centered {
+    display: flex;
+    gap: 2em;
+    flex-wrap: wrap;
+    align-content: center;
+    align-items: center;
+}

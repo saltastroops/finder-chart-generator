@@ -11,7 +11,7 @@ const fitsFileOptionElements = {
 }
 
 const data = {}
-const errors = {}
+let errors = {}
 
 
 function switchTab(event) {
@@ -54,6 +54,9 @@ function displayTabContent(selectedTab) {
   // show the content of the selected tab
   const target = selectedTab.dataset.target;
   tabContainer.appendChild(tabContents[target]);
+
+  // update the errors
+  displayErrors();
 }
 
 function switchFitsOption(event) {
@@ -76,13 +79,95 @@ function selectFitsOption(optionElementId) {
 
 async function generateFinderChart(event) {
   event.preventDefault();
+  indicateLoading(true)
+  const defaultErrors = {__general: "Oops. Something has gone wrong."}
+  try {
+    const response = await makeGenerationRequest();
+    switch (response.status) {
+    case 200:
+      errors = {}
+      // displayFinderChart()
+      return;
+    case 400:
+      const json = await response.json()
+      errors = json["errors"];
+      return
+    default:
+      errors = defaultErrors;
+    }
+  } catch (e) {
+    errors = defaultErrors;
+  } finally {
+    displayErrors();
+    indicateLoading(false);
+  }
+}
+
+function indicateLoading(loading) {
+  const submitButton = document.querySelector("#submit");
+  if (loading) {
+    submitButton.classList.add("is-loading");
+  } else {
+    submitButton.classList.remove("is-loading");
+  }
+}
+
+async function makeGenerationRequest() {
   const selectedTab = tabs.find(tab => tab.classList.contains("is-active"));
   const target = selectedTab.dataset.target;
   const mode = target.split("_form")[0];
   const url = `/finder-charts?mode=${mode}`;
   const formData = new FormData(event.target);
-  const response = await fetch(url, { method: "POST", body: formData });
-  console.log(mode, await response.json())
+  return fetch(url, { method: "POST", body: formData });
+}
+
+function displayErrors() {
+  clearErrors();
+  addErrors();
+}
+
+function clearErrors() {
+  // Remove all error messages by hiding the DOM element and removing its text content.
+  // Also, remove the is-danger class from any corresponding input field.
+  const fields = document.querySelectorAll(".field");
+  for (let field of fields) {
+    const input = field.querySelector("input");
+    const errorMessage = field.querySelector("div.is-danger");
+    if (input) {
+      input.classList.remove("is-danger");
+    }
+    if (errorMessage) {
+      errorMessage.innerText = "";
+      errorMessage.style.display = "hidden";
+    }
+  }
+  const generalErrorMessage = document.querySelector("#general-error");
+  generalErrorMessage.innerText = "";
+  generalErrorMessage.style.display = "hidden";
+}
+
+function addErrors() {
+  // For each error, show the error message DOM element and set its text content.
+  // Also, add the is-danger class to any corresponding input field.
+  for (let key of Object.keys(errors)) {
+    const field = document.querySelector(`.field[data-name="${key}"]`);
+    if (field) {
+      const input = field.querySelector("input");
+      const errorMessage = field.querySelector("div.is-danger");
+      if (input) {
+        input.classList.add("is-danger");
+      }
+      if (errorMessage) {
+        errorMessage.style.display = "block";
+        errorMessage.innerText = errors[key];
+      }
+    }
+  }
+  if (Object.keys(errors).includes("__general")) {
+    const generalErrorMessage = document.querySelector("#general-error");
+    generalErrorMessage.style.display = "block";
+    generalErrorMessage.innerText = errors["__general"];
+  }
 }
 
 function init() {
