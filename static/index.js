@@ -13,6 +13,8 @@ const fitsFileOptionElements = {
 const data = {}
 let errors = {}
 
+let previousDataUrl = null;
+
 
 function switchTab(event) {
   // Store the form data
@@ -79,6 +81,12 @@ function selectFitsOption(optionElementId) {
 
 async function generateFinderChart(event) {
   event.preventDefault();
+
+  // If there is a data URL already, we should discard it
+  if (previousDataUrl) {
+    URL.revokeObjectURL(previousDataUrl);
+  }
+
   indicateLoading(true)
   const defaultErrors = {__general: "Oops. Something has gone wrong."}
   try {
@@ -86,7 +94,7 @@ async function generateFinderChart(event) {
     switch (response.status) {
     case 200:
       errors = {}
-      // displayFinderChart()
+      await displayFinderChart(response)
       return;
     case 400:
       const json = await response.json()
@@ -119,6 +127,14 @@ async function makeGenerationRequest() {
   const url = `/finder-charts?mode=${mode}`;
   const formData = new FormData(event.target);
   return fetch(url, { method: "POST", body: formData });
+}
+
+async function displayFinderChart(response) {
+  const blob = await response.blob();
+  const dataUrl = URL.createObjectURL(blob);
+  previousDataUrl = dataUrl;
+  const downloadLink = document.querySelector("#display-link");
+  window.open(dataUrl);
 }
 
 function displayErrors() {
