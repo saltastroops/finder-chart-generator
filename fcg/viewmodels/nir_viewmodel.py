@@ -16,7 +16,7 @@ class NirViewModel(BaseViewModel):
         self.science_bundle_right_ascension: Angle | None = None
         self.science_bundle_declination: Angle | None = None
         self.nir_bundle_separation: Angle | None = None
-        self.position_angle: float | None = None
+        self.position_angle: Angle | None = None
         self.background_image: str | UploadFile | None = None
         self.errors: dict[str, str] = dict()
 

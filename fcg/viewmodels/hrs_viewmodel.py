@@ -1,3 +1,4 @@
+from astropy.coordinates import Angle
 from fastapi import Request, UploadFile
 
 from fcg.viewmodels import parse
@@ -10,9 +11,9 @@ class HrsViewModel(BaseViewModel):
         self.proposal_code = ""
         self.principal_investigator = ""
         self.target = ""
-        self.right_ascension: float | None = None
-        self.declination: float | None = None
-        self.position_angle: float | None = None
+        self.right_ascension: Angle | None = None
+        self.declination: Angle | None = None
+        self.position_angle: Angle | None = None
         self.background_image: str | UploadFile | None = None
         self.errors: dict[str, str] = dict()
 
