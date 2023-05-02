@@ -41,12 +41,14 @@ class NirViewModel(BaseViewModel):
         self.declination = parse.parse_declination(form, self.errors)
 
         # science bundle right ascension
-        self.right_ascension = parse.parse_science_bundle_right_ascension(
-            form, self.errors
+        self.science_bundle_right_ascension = (
+            parse.parse_science_bundle_right_ascension(form, self.errors)
         )
 
         # science bundle declination
-        self.declination = parse.parse_science_bundle_declination(form, self.errors)
+        self.science_bundle_declination = parse.parse_science_bundle_declination(
+            form, self.errors
+        )
 
         # bundle separation
         self.nir_bundle_separation = parse.parse_nir_bundle_separation(

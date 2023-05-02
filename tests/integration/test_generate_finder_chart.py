@@ -50,12 +50,12 @@ def test_generate_for_hrs(client: TestClient) -> None:
         "proposal_code": "2023-1-SCI-042",
         "principal_investigator": "Adams",
         "target": "Magrathea",
-        "right_ascension": "42",
-        "declination": "-42",
+        "right_ascension": "180",
+        "declination": "-45",
         "position_angle": "0",
-        "image_survey": "POSS2/UKSTU Red",
     }
-    response = client.post(_URL, params={"mode": "hrs"}, data=data)
+    files = {"custom_fits": open("tests/data/ra12h_dec-45deg_10arcmin.fits", "rb")}
+    response = client.post(_URL, params={"mode": "hrs"}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
 
 

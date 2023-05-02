@@ -12,7 +12,6 @@ class MosViewModel(BaseViewModel):
         self.principal_investigator = ""
         self.target = ""
         self.mos_mask_file: UploadFile | None = None
-        self.position_angle: Angle | None = None
         self.background_image: str | UploadFile | None = None
         self.errors: dict[str, str] = dict()
 
