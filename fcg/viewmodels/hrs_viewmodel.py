@@ -2,7 +2,7 @@ from astropy.coordinates import Angle
 from fastapi import Request, UploadFile
 
 from fcg.viewmodels import parse
-from fcg.viewmodels.base_viewmodel import BaseViewModel
+from fcg.viewmodels.base_viewmodel import BaseViewModel, OutputFormat
 
 
 class HrsViewModel(BaseViewModel):
@@ -15,6 +15,7 @@ class HrsViewModel(BaseViewModel):
         self.declination: Angle | None = None
         self.position_angle: Angle | None = None
         self.background_image: str | UploadFile | None = None
+        self.output_format: OutputFormat | None = None
         self.errors: dict[str, str] = dict()
 
     async def load(self) -> None:
@@ -42,3 +43,6 @@ class HrsViewModel(BaseViewModel):
 
         # background image
         self.background_image = parse.parse_background_image(form, self.errors)
+
+        # output format
+        self.output_format = parse.parse_output_format(form, self.errors)

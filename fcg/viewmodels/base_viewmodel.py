@@ -1,6 +1,9 @@
-from typing import Any
+from typing import Any, Literal
 
 from fastapi import Request
+
+
+OutputFormat = Literal["pdf", "png"]
 
 
 class BaseViewModel:

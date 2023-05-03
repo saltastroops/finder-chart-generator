@@ -4,6 +4,7 @@ from astropy.coordinates import Angle, SkyCoord
 from imephu.service.survey import is_covering_position
 from starlette.datastructures import FormData, UploadFile
 
+from fcg.viewmodels.base_viewmodel import OutputFormat
 from infrastructure import parse
 
 
@@ -164,6 +165,18 @@ def parse_background_image(
     else:
         errors["__general"] = "An image survey or a custom FITS file must be supplied."
         return None
+
+
+def parse_output_format(form: FormData, errors: dict[str, str]) -> OutputFormat | None:
+    output_format = form.get("output_format", "pdf").strip()
+    match output_format.lower():
+        case "pdf":
+            return "pdf"
+        case "png":
+            return "png"
+        case _:
+            errors["output_format"] = f"Unsupported output format: {output_format}"
+            return None
 
 
 def _is_position_covered_by_survey(form: FormData, survey: str) -> bool:

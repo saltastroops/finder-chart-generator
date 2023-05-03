@@ -24,6 +24,7 @@ from imephu.utils import MagnitudeRange
 from starlette import status
 from starlette.responses import StreamingResponse
 
+from fcg.viewmodels.base_viewmodel import OutputFormat
 from fcg.viewmodels.hrs_viewmodel import HrsViewModel
 from fcg.viewmodels.imaging_viewmodel import ImagingViewModel
 from fcg.viewmodels.longslit_viewmodel import LongslitViewModel
@@ -87,7 +88,7 @@ async def _hrs(request: Request) -> Response:
     )
     finder_chart = hrs_finder_chart(fits=fits, general=general_properties)
 
-    return _finder_chart_stream(finder_chart)
+    return _finder_chart_stream(finder_chart, vm.output_format)
 
 
 async def _imaging(request: Request) -> Response:
@@ -113,7 +114,7 @@ async def _imaging(request: Request) -> Response:
     finder_chart = salticam_finder_chart(
         fits=fits, general=general_properties, is_slot_mode=False
     )
-    return _finder_chart_stream(finder_chart)
+    return _finder_chart_stream(finder_chart, vm.output_format)
 
 
 async def _longslit(request: Request) -> Response:
@@ -142,7 +143,7 @@ async def _longslit(request: Request) -> Response:
         slit_width=vm.slit_width,
         slit_height=8 * u.arcmin,
     )
-    return _finder_chart_stream(finder_chart)
+    return _finder_chart_stream(finder_chart, vm.output_format)
 
 
 async def _mos(request: Request) -> Response:
@@ -169,7 +170,7 @@ async def _mos(request: Request) -> Response:
     finder_chart = rss_mos_finder_chart(
         fits=fits, general=general_properties, mos_mask=mos_mask
     )
-    return _finder_chart_stream(finder_chart)
+    return _finder_chart_stream(finder_chart, vm.output_format)
 
 
 async def _nir(request: Request) -> Response:
@@ -201,7 +202,7 @@ async def _nir(request: Request) -> Response:
         science_bundle_center=science_bundle_center,
         bundle_separation=vm.nir_bundle_separation,
     )
-    return _finder_chart_stream(finder_chart)
+    return _finder_chart_stream(finder_chart, vm.output_format)
 
 
 async def _slotmode(request: Request) -> Response:
@@ -225,11 +226,9 @@ async def _slotmode(request: Request) -> Response:
         survey=survey,
     )
     finder_chart = salticam_finder_chart(
-        fits=fits,
-        general=general_properties,
-        is_slot_mode=True
+        fits=fits, general=general_properties, is_slot_mode=True
     )
-    return _finder_chart_stream(finder_chart)
+    return _finder_chart_stream(finder_chart, vm.output_format)
 
 
 def _general_properties(
@@ -277,9 +276,20 @@ async def _mos_mask(mos_mask_file: UploadFile) -> MosMask:
         return MosMask.from_file(pathlib.Path(fp.name))
 
 
-def _finder_chart_stream(finder_chart: FinderChart) -> StreamingResponse:
+def _finder_chart_stream(
+    finder_chart: FinderChart, output_format: OutputFormat
+) -> StreamingResponse:
     content = BytesIO()
-    finder_chart.save(content, format="pdf")
+    finder_chart.save(content, format=output_format)
     content.seek(0)
 
-    return StreamingResponse(content, media_type="application/pdf")
+    match output_format:
+        case "pdf":
+            media_type = "application/pdf"
+        case "png":
+            media_type = "image/png"
+        case _:
+            # should never happen
+            raise ValueError(f"Unsupported output format: {output_format}")
+
+    return StreamingResponse(content, media_type=media_type)
