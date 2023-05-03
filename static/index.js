@@ -134,7 +134,7 @@ async function displayFinderChart(response) {
   const dataUrl = URL.createObjectURL(blob);
   previousDataUrl = dataUrl;
   const downloadLink = document.querySelector("#display-link");
-  window.open(dataUrl);
+  location.href = dataUrl;
 }
 
 function displayErrors() {
