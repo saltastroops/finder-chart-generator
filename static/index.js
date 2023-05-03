@@ -61,6 +61,19 @@ function displayTabContent(selectedTab) {
   displayErrors();
 }
 
+function displayFilename(event) {
+  if (event.target.getAttribute("type") !== "file") {
+    // Only consider file input fields
+    return;
+  }
+  const parent = event.target.parentNode;
+  if (!parent) {
+    return;
+  }
+  const filenameElement = parent.querySelector(".file-name");
+  filenameElement.innerText = event.target.files[0].name;
+}
+
 function switchFitsOption(event) {
   // Get the id of the FITS file option element from the data-target attribute value
   // of the selected radio button.
@@ -187,8 +200,13 @@ function addErrors() {
 }
 
 function init() {
-  // Add an event listener to all the tabs
+  // Add an event listener to the tabs for tab-switching
   tabs.forEach(tab => tab.addEventListener("click", switchTab));
+
+  // Add an event listener for displaying the filename. As the custom FITS file upload
+  // button is created dynamically, we have to resort to event bubbling (see, for
+  // example, https://typeofnan.dev/how-to-bind-event-listeners-on-dynamically-created-elements-in-javascript/
+  document.querySelector('form').addEventListener("change", displayFilename);
 
   // Add an event listener to the radio buttons for selecting the FITS file option
   document.querySelectorAll("#fits_controls input")
