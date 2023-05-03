@@ -43,7 +43,23 @@ def test_parse_form_field_handles_missing_value(form: dict[str, str]) -> None:
 
 
 def test_parse_form_field_returns_invalid_value() -> None:
-    assert len("ppp") == 1
+    def f(s: str) -> str:
+        raise ValueError(invalid_message)
+
+    form = {"a": "not valid"}
+    missing_message = "The value is missing."
+    invalid_message = "The value is invalid."
+    errors: dict[str, str] = dict()
+    parsed_value = parse_generic_form_field(
+        form=cast(FormData, form),
+        field="a",
+        parse_func=f,
+        missing_message=missing_message,
+        error_id="a",
+        errors=errors,
+    )
+    assert errors == {"a": invalid_message}
+    assert parsed_value is None
 
 
 @pytest.mark.parametrize(

@@ -1,11 +1,50 @@
 from io import BytesIO
+from typing import Any, Tuple, BinaryIO, Callable
 
+import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 from starlette import status
 
 
+_CheckImage = Callable[[bytes], None]
+
+
 _URL = "/finder-charts"
+
+
+def _valid_input(mode: str) -> Tuple[dict[str, str], dict[str, BinaryIO]]:
+    data = {
+        "proposal_code": "2023-1-SCI-042",
+        "principal_investigator": "Adams",
+        "target": "Magrathea",
+        "right_ascension": "170.1",
+        "declination": "-55.5",
+        "position_angle": "30",
+        "output_format": "png",
+    }
+    files = {"custom_fits": open("tests/data/ra170.1_dec-55.5.fits", "rb")}
+    match mode:
+        case "hrs":
+            pass
+        case "imaging":
+            pass
+        case "longslit":
+            data["slit_width"] = "4"
+        case "mos":
+            del data["right_ascension"]
+            del data["declination"]
+            files["mos_mask_file"] = open("tests/data/mos_mask.xml", "rb")
+        case "nir":
+            data["science_bundle_right_ascension"] = "180d 1m"
+            data["science_bundle_declination"] = "-45d 2m"
+            data["nir_bundle_separation"] = "100"
+        case "slotmode":
+            pass
+        case _:
+            raise ValueError(f"Unsupported mode: {mode}")
+
+    return data, files
 
 
 @pytest.mark.parametrize("mode", ["", "invalid"])
@@ -45,18 +84,12 @@ def test_generate_for_hrs_with_missing_values(client: TestClient):
         assert missing_info in errors[field]
 
 
-def test_generate_for_hrs(client: TestClient) -> None:
-    data = {
-        "proposal_code": "2023-1-SCI-042",
-        "principal_investigator": "Adams",
-        "target": "Magrathea",
-        "right_ascension": "180",
-        "declination": "-45",
-        "position_angle": "0",
-    }
-    files = {"custom_fits": open("tests/data/ra12h_dec-45deg_10arcmin.fits", "rb")}
+def test_generate_for_hrs(client: TestClient, check_image: _CheckImage) -> None:
+    np.random.seed(0)
+    data, files = _valid_input("hrs")
     response = client.post(_URL, params={"mode": "hrs"}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
+    check_image(response.content)
 
 
 def test_generate_for_imaging_with_missing_values(client: TestClient):
@@ -77,18 +110,11 @@ def test_generate_for_imaging_with_missing_values(client: TestClient):
         assert missing_info in errors[field]
 
 
-def test_generate_for_imaging(client: TestClient) -> None:
-    data = {
-        "proposal_code": "2023-1-SCI-042",
-        "principal_investigator": "Adams",
-        "target": "Magrathea",
-        "right_ascension": "42",
-        "declination": "-42",
-        "position_angle": "0",
-        "image_survey": "POSS2/UKSTU Red",
-    }
-    response = client.post(_URL, params={"mode": "imaging"}, data=data)
+def test_generate_for_imaging(client: TestClient, check_image: _CheckImage) -> None:
+    data, files = _valid_input("imaging")
+    response = client.post(_URL, params={"mode": "imaging"}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
+    check_image(response.content)
 
 
 def test_generate_for_longslit_with_missing_values(client: TestClient):
@@ -110,19 +136,11 @@ def test_generate_for_longslit_with_missing_values(client: TestClient):
         assert missing_info in errors[field]
 
 
-def test_generate_for_longslit(client: TestClient) -> None:
-    data = {
-        "proposal_code": "2023-1-SCI-042",
-        "principal_investigator": "Adams",
-        "target": "Magrathea",
-        "right_ascension": "42",
-        "declination": "-42",
-        "slit_width": "3",
-        "position_angle": "0",
-        "image_survey": "POSS2/UKSTU Red",
-    }
-    response = client.post(_URL, params={"mode": "longslit"}, data=data)
+def test_generate_for_longslit(client: TestClient, check_image: _CheckImage) -> None:
+    data, files = _valid_input("longslit")
+    response = client.post(_URL, params={"mode": "longslit"}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
+    check_image(response.content)
 
 
 def test_generate_for_mos_with_missing_values(client: TestClient):
@@ -141,17 +159,11 @@ def test_generate_for_mos_with_missing_values(client: TestClient):
         assert missing_info in errors[field]
 
 
-def test_generate_for_mos(client: TestClient) -> None:
-    data = {
-        "proposal_code": "2023-1-SCI-042",
-        "principal_investigator": "Adams",
-        "target": "Magrathea",
-        "position_angle": "0",
-        "image_survey": "POSS2/UKSTU Red",
-    }
-    files = {"mos_mask_file": BytesIO(b"FITS")}
+def test_generate_for_mos(client: TestClient, check_image: _CheckImage) -> None:
+    data, files = _valid_input("mos")
     response = client.post(_URL, params={"mode": "mos"}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
+    check_image(response.content)
 
 
 def test_generate_for_nir_with_missing_values(client: TestClient):
@@ -175,21 +187,11 @@ def test_generate_for_nir_with_missing_values(client: TestClient):
         assert missing_info in errors[field]
 
 
-def test_generate_for_nir(client: TestClient) -> None:
-    data = {
-        "proposal_code": "2023-1-SCI-042",
-        "principal_investigator": "Adams",
-        "target": "Magrathea",
-        "right_ascension": "42",
-        "declination": "-42",
-        "science_bundle_right_ascension": "42",
-        "science_bundle_declination": "-42",
-        "nir_bundle_separation": "123",
-        "position_angle": "0",
-        "image_survey": "POSS2/UKSTU Red",
-    }
-    response = client.post(_URL, params={"mode": "nir"}, data=data)
+def test_generate_for_nir(client: TestClient, check_image: _CheckImage) -> None:
+    data, files = _valid_input("nir")
+    response = client.post(_URL, params={"mode": "nir"}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
+    check_image(response.content)
 
 
 def test_generate_for_slotmode_with_missing_values(client: TestClient):
@@ -210,18 +212,11 @@ def test_generate_for_slotmode_with_missing_values(client: TestClient):
         assert missing_info in errors[field]
 
 
-def test_generate_for_slotmode(client: TestClient) -> None:
-    data = {
-        "proposal_code": "2023-1-SCI-042",
-        "principal_investigator": "Adams",
-        "target": "Magrathea",
-        "right_ascension": "42",
-        "declination": "-42",
-        "position_angle": "0",
-        "image_survey": "POSS2/UKSTU Red",
-    }
-    response = client.post(_URL, params={"mode": "slotmode"}, data=data)
+def test_generate_for_slotmode(client: TestClient, check_image: _CheckImage) -> None:
+    data, files = _valid_input("slotmode")
+    response = client.post(_URL, params={"mode": "slotmode"}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
+    check_image(response.content)
 
 
 @pytest.mark.parametrize("mode", ["hrs", "imaging", "longslit", "slotmode", "nir"])
@@ -341,3 +336,15 @@ def test_background_image_errors(mode: str, client: TestClient) -> None:
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert "cover" in errors["image_survey"]
+
+
+@pytest.mark.parametrize(
+    "mode", ["hrs", "imaging", "longslit", "mos", "nir", "slotmode"]
+)
+def test_generate_for_invalid_output_format(mode: str, client: TestClient) -> None:
+    data, files = _valid_input(mode)
+    data["output_format"] = "invalid"
+    response = client.post(_URL, params={"mode": "hrs"}, data=data, files=files)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    errors = response.json()["errors"]
+    assert "unsupported" in errors["output_format"].lower()
