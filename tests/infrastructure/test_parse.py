@@ -3,7 +3,7 @@ from typing import cast
 import pytest
 from starlette.datastructures import FormData
 
-from infrastructure.parse import (
+from fcg.infrastructure.parse import (
     is_float,
     parse_declination,
     parse_generic_form_field,

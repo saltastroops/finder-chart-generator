@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Request, Response
 
 from fcg.viewmodels.index_viewmodel import IndexViewModel
-from infrastructure.jinja2 import templates
+from fcg.infrastructure.jinja2 import templates
 
 router = APIRouter()
 
