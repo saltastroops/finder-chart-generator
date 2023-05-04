@@ -26,4 +26,4 @@ COPY templates templates
 
 USER www-data
 
-CMD uvicorn fcg.main:app --port 6789 --host 0.0.0.0
+CMD uvicorn fcg.main:app --port 8000 --host 0.0.0.0
