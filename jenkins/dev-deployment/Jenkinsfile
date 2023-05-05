@@ -1,22 +1,19 @@
 pipeline {
   agent any
 
-  parameters {
-    credentials credentialType: 'com.cloudbees.plugins.credentials.impl.UsernamePasswordCredentialsImpl', defaultValue: '', description: 'Container registry credentials', name: 'registryCredentials', required: true
-  }
-
   environment {
-    REGISTRY_CREDENTIALS = "TEST"
+    REGISTRY_CREDENTIALS = credentials('docker-registry-credentials')
+    TAG = sh returnStdout: true, script: 'git rev-parse --short HEAD'
   }
 
   stages {
     stage("Build the Docker image") {
       steps {
         echo "-------------"
-        echo params.registryCredentials
+        echo ${TAG}
         echo "-------------"
         script {
-          dockerImage = docker.build("$REGISTRY_CREDENTIALS_USR/finder-chart-generator:dev")
+          dockerImage = docker.build("$REGISTRY_CREDENTIALS_USR/finder-chart-generator:${TAG}")
         }
       }
     }
