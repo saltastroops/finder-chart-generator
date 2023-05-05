@@ -3,7 +3,7 @@ pipeline {
 
   environment {
     REGISTRY_CREDENTIALS = credentials('docker-registry-credentials')
-    TAG = sh returnStdout: true, script: 'git rev-parse --short HEAD'
+    TAG = sh returnStdout: true, script: 'git rev-parse --short HEAD | tr -d "\n"'
   }
 
   stages {
