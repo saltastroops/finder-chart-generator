@@ -10,7 +10,7 @@ pipeline {
     stage("Build the Docker image") {
       steps {
         echo "-------------"
-        echo ${TAG}
+        echo "${TAG}"
         echo "-------------"
         script {
           dockerImage = docker.build("$REGISTRY_CREDENTIALS_USR/finder-chart-generator:${TAG}")
