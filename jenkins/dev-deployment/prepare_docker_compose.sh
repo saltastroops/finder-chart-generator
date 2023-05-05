@@ -15,4 +15,6 @@ registry_pattern='s#${DOCKER_REGISTRY}#'
 registry_pattern+="${registry}#"
 username_pattern='s/${DOCKER_REGISTRY_USERNAME}/'
 username_pattern+="${REGISTRY_CREDENTIALS_USR}/"
-sed "$registry_pattern" docker-compose.yml | sed "$username_pattern" | sed 's/${TAG}/dev/'
+tag_pattern='s/${TAG}/'
+tag_pattern+="${TAG}/"
+sed "$registry_pattern" docker-compose.yml | sed "$username_pattern" | sed "$tag_pattern"
