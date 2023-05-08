@@ -1,4 +1,4 @@
-@Library('saao-shared-library') _
+@Library('saao-shared-library@deploy-container') _
 
 pipeline {
   agent any
