@@ -1,6 +1,6 @@
 services:
   fcg:
-    image: ${DOCKER_REGISTRY}/${DOCKER_REGISTRY_USERNAME}/finder-chart-generator:${TAG}
+    image: ${REGISTRY}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${TAG}
     ports:
       - 6789:8000
     restart: always
