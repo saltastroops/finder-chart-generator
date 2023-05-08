@@ -11,7 +11,7 @@ pipeline {
   stages {
     stage("Use shared library") {
       steps {
-        saaoDeployContainer(server: "")
+        saaoDeployContainer host: "${FCG_DEV_HOST}", hostCredentialsId: 'fcg-dev-server-credentials', registryCredentialsId: 'docker-registry-credentials', registryUrl: "${DOCKER_REGISTRY}"
         error "BOOM!!!"
       }
     }
