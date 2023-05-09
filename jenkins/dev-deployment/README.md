@@ -1,23 +1,16 @@
-# Deployment to a development server
+# Deployment to a server
 
-Running the Jenkinsfile requires ssh credentials, a secret file, and some environment variables.
+You can deploy the Finder Chart Generator to a server by means of the Jenkinsfile `jenkins/deployment/Jenkinsfile`.
 
-## Jenkins credentials
+## Parameters
 
-You need to define the following credentials under Dashboard > Manage Jenkins > Manage Credentials.
+The Jenkinsfile is using several parameters. When configuring a pipeline with this file, tick the "This project is parameterized" checkbox and add all the required parameters with the correct default values. If the pipeline is run as an SCM pipeline, the default values will be used; so they should be the correct values for the deployment.
 
-| Secret ID                   | Type                          | Explanation                                                               |
-|-----------------------------|-------------------------------|---------------------------------------------------------------------------|
-| docker-registry-credentials | Username with password        | Username and password for the container registry hosting the Docker image |
-| fcg-dev-server-credentials  | SSH username with private key | Username and private SSH key for the development server                   |
+The following parameters are used by the script.
 
-## Environment variables
-
-The following environment variables need to be defined. You can set them under Dashboard > Manage Jenkins > Configure System in the section "Global properties".
-
-| Variable        | Description                                                | Example                      |
-|-----------------|------------------------------------------------------------|------------------------------|
-| DOCKER_REGISTRY | URL of the container registry for hosting the Docker image | https://registry.example.com |
-| FCG_DEV_HOST    | Hostname of the Finder Chart Generator development server  | dev.example.com              |
-
-
+| Parameter name            | Type                                        | Explanation                                                                                                                                                                                                                             | Example value                |
+|---------------------------|---------------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------------------------------|
+| dockerRegistryCredentials | Credentials (username with password)        | Username and password for the container registry hosting the Docker image                                                                                                                                                               |                              |
+| dockerRegistryUrl         | String                                      | URL of the container registry for hosting the Docker image                                                                                                                                                                              | https://registry.example.com |
+| host                      | String                                      | Hostname of the server on which to deploy                                                                                                                                                                                               | dev.example.com              |
+| sshCredentials            | Credentials (SSH username with private key) | Username and private SSH key for connecting to the host. The username must be that of a user on the host, the SSH key must be that of the Jenkins user. The corresponding public key must be in the `authorized_keys` file on the host. |                              |
