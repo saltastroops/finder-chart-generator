@@ -11,7 +11,7 @@ pipeline {
           hostCredentialsId: 'fcg-dev-server-credentials',
           imageName: 'finder-chart-generator',
           registryCredentialsId: 'docker-registry-credentials',
-          registryUrl: "${DOCKER_REGISTRY}"]
+          registryUrl: "${DOCKER_REGISTRY}"
         )
       }
     }
