@@ -1,4 +1,4 @@
-@Library('saao-shared-library@deploy-container') _
+@Library('saao-shared-library@run-python-tests') _
 
 pipeline {
   agent any
