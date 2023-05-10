@@ -2,9 +2,9 @@ FROM python:3.9 AS requirements
 
 RUN apt-get update -y
 
-RUN curl -sSL https://install.python-poetry.org | python3 -
+RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr/local/bin python3 -
 
-RUN ~/.local/bin/poetry export -f requirements.txt --with dev --output requirements.txt
+RUN poetry export -f requirements.txt --with dev --output requirements.txt
 
 # --------
 
@@ -14,9 +14,3 @@ RUN apt-get update -y
 
 RUN pip install wheel
 RUN pip install bandit black flake8 isort mypy
-
-COPY --from=requirements /requirements/requirements.txt requirements.txt
-
-RUN PIP INSTALL -r reqirements.txt
-
-
