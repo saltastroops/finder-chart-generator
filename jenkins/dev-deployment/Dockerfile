@@ -10,8 +10,6 @@ RUN ~/.local/bin/poetry export -f requirements.txt --with dev --output requireme
 
 FROM python:3.9
 
-WORKDIR /
-
 RUN apt-get update -y
 
 RUN pip install wheel
