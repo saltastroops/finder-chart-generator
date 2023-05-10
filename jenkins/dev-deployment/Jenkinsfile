@@ -4,17 +4,20 @@ pipeline {
   agent any
 
   stages {
-    stage("Deploy the site") {
-      steps {
-        saaoDeployContainer(
-          host: "${FCG_DEV_HOST}",
-          hostCredentialsId: 'fcg-dev-server-credentials',
-          imageName: 'finder-chart-generator',
-          registryCredentialsId: 'docker-registry-credentials',
-          registryUrl: "${DOCKER_REGISTRY}"
-        )
-      }
+    stage("Run tests") {
+      saaoRunPythonTests()
     }
+//     stage("Deploy the site") {
+//       steps {
+//         saaoDeployContainer(
+//           host: "${FCG_DEV_HOST}",
+//           hostCredentialsId: 'fcg-dev-server-credentials',
+//           imageName: 'finder-chart-generator',
+//           registryCredentialsId: 'docker-registry-credentials',
+//           registryUrl: "${DOCKER_REGISTRY}"
+//         )
+//       }
+//     }
   }
 
   post {
