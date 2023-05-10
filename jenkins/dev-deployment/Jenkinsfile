@@ -20,7 +20,7 @@ pipeline {
           success = saaoRunPythonTests(
 //             'bandit': ['fcg'],
             'black': ['fcg', 'tests'],
-//             'flake8': ['fcg', 'tests'],
+            'flake8': ['fcg', 'tests'],
 //             'isort': ['fcg', 'tests'],
 //             'mypy': ['fcg', 'tests'],
 //             'pytest': ['tests']
