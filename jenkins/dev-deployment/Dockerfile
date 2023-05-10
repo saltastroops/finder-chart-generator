@@ -4,7 +4,7 @@ RUN apt-get update -y
 
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
-RUN /root/.local/share/poetry export -f requirements.txt --with dev --output requirements.txt
+RUN ~/.local/bin/poetry export -f requirements.txt --with dev --output requirements.txt
 
 # --------
 
