@@ -12,6 +12,7 @@ pipeline {
   stages {
     stage("Run tests") {
       steps {
+        sh 'echo $PATH'
         sh 'poetry export -f requirements.txt --with dev --output requirements.txt'
         saaoRunPythonTests()
       }
