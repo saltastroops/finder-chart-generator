@@ -27,10 +27,10 @@ pipeline {
           )
         }
       }
-      stage("Show success status") {
-        steps {
-          echo "Success?: $success"
-        }
+    }
+    stage("Show success status") {
+      steps {
+        echo "Success?: $success"
       }
     }
 //     stage("Deploy the site") {
