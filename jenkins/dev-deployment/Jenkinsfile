@@ -5,7 +5,9 @@ pipeline {
 
   stages {
     stage("Run tests") {
-      saaoRunPythonTests()
+      steps {
+        saaoRunPythonTests()
+      }
     }
 //     stage("Deploy the site") {
 //       steps {
