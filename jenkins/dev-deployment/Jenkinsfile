@@ -1,7 +1,13 @@
 @Library('saao-shared-library@run-python-tests') _
 
 pipeline {
-  agent any
+  agent {
+    dockerfile {
+      filename 'Dockerfile'
+      dir 'jenkins/dev-deployment'
+      args '-v finder-chart-generator-venv:/venv -u 0:0'
+    }
+  }
 
   stages {
     stage("Run tests") {
