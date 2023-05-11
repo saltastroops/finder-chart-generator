@@ -1,4 +1,3 @@
-from astropy.coordinates import Angle
 from fastapi import Request, UploadFile
 
 from fcg.viewmodels import parse
