@@ -29,11 +29,6 @@ pipeline {
         }
       }
     }
-    stage("Show success status") {
-      steps {
-        echo "Success?: $success"
-      }
-    }
     stage("Deploy the site") {
       steps {
         script {
@@ -51,6 +46,7 @@ pipeline {
 
   post {
     always {
+      echo "SUCCESS?: $success"
       allure includeProperties: false, jdk: '', results: [[path: 'reports/allure']]
       junit skipMarkingBuildUnstable: true, skipPublishingChecks: true, testResults: 'reports/junit/*.xml'
 
