@@ -17,7 +17,7 @@ pipeline {
         sh 'echo $PATH'
         sh 'poetry export -f requirements.txt --with dev --output requirements.txt'
         script {
-          success = saaoRunPythonTests 'black': ['src', 'tests'], 'pytest': ['tests'], 'junit': 'reports/junit'
+          success = saaoRunPythonTests 'black': ['src', 'tests'], 'pytest': ['tests']
 //             'bandit': ['fcg'],
 //             'black': ['fcg', 'tests'],
 //             'flake8': ['fcg', 'tests'],
