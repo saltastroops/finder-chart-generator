@@ -5,4 +5,4 @@ RUN apt-get update -y
 RUN curl -sSL https://install.python-poetry.org | POETRY_HOME=/usr/local python3 -
 
 RUN pip install wheel
-RUN pip install bandit black flake8 isort mypy pytest pytest-cov
+RUN pip install allure-pytest bandit black flake8 isort mypy pytest pytest-cov
