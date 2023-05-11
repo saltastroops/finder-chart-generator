@@ -14,7 +14,9 @@ pipeline {
     }
   }
       steps {
-        saao.setRunning("This should work...")
+        script {
+          saao.setRunning("This should work...")
+        }
         sh 'echo $PATH'
         sh 'poetry export -f requirements.txt --with dev --output requirements.txt'
         sh 'python -m pip install -r requirements.txt'
@@ -50,7 +52,9 @@ pipeline {
 
   post {
     always {
-      saao.printRunning()
+      script {
+        saao.printRunning()
+      }
       allure includeProperties: false, jdk: '', results: [[path: 'reports/allure']]
       junit skipMarkingBuildUnstable: true, skipPublishingChecks: true, testResults: 'reports/junit/*.xml'
 
