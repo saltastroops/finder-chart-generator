@@ -18,7 +18,7 @@ pipeline {
         sh 'poetry export -f requirements.txt --with dev --output requirements.txt'
         sh 'python -m pip install -r requirements.txt'
         script {
-          success = saao.runPythonTests 'black': ['fcg', 'tests'], 'pytest': ['tests']
+          success = saao.runPythonTests 'black': ['fcg', 'tests'], 'flake8': ['fcg', 'tests'], 'mypy': ['fcg', 'tests'], 'pytest': ['tests']
 //             'bandit': ['fcg'],
 //             'black': ['fcg', 'tests'],
 //             'flake8': ['fcg', 'tests'],
@@ -29,26 +29,26 @@ pipeline {
         }
       }
     }
-    stage("Deploy the site") {
-      steps {
-        script {
-          saao.deployContainer(
-            host: "${FCG_DEV_HOST}",
-            hostCredentialsId: 'fcg-dev-server-credentials',
-            imageName: 'finder-chart-generator',
-            registryCredentialsId: 'docker-registry-credentials',
-            registryUrl: "${DOCKER_REGISTRY}"
-          )
-        }
-      }
-    }
+//     stage("Deploy the site") {
+//       steps {
+//         script {
+//           saao.deployContainer(
+//             host: "${FCG_DEV_HOST}",
+//             hostCredentialsId: 'fcg-dev-server-credentials',
+//             imageName: 'finder-chart-generator',
+//             registryCredentialsId: 'docker-registry-credentials',
+//             registryUrl: "${DOCKER_REGISTRY}"
+//           )
+//         }
+//       }
+//     }
   }
 
   post {
     always {
       echo "SUCCESS?: $success"
       allure includeProperties: false, jdk: '', results: [[path: 'reports/allure']]
-      junit skipMarkingBuildUnstable: true, skipPublishingChecks: true, testResults: 'reports/junit/*.xml'
+      recordIssues(tools: [flake8(pattern: 'reports/warnings-next-generation/flake8.txt'), myPy(pattern: 'reports/warnings-next-generation')])
 
       //cleanWs()
     }
