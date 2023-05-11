@@ -18,7 +18,7 @@ pipeline {
         sh 'poetry export -f requirements.txt --with dev --output requirements.txt'
         sh 'python -m pip install -r requirements.txt'
         script {
-          success = saaoRunPythonTests 'black': ['fcg', 'tests'], 'pytest': ['tests'], 'junit': 'reports/junit'
+          success = saaoRunPythonTests 'black': ['fcg', 'tests'], 'pytest': ['tests'], 'junit': 'reports/junit', 'allure': 'reports/allure'
 //             'bandit': ['fcg'],
 //             'black': ['fcg', 'tests'],
 //             'flake8': ['fcg', 'tests'],
