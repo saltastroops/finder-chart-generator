@@ -27,7 +27,6 @@ pipeline {
 //             'pytest': ['tests']
 //          )
         }
-        sh 'ls -l reports/warnings-next-generation/'
       }
     }
 //     stage("Deploy the site") {
