@@ -3,6 +3,9 @@
 def success = true
 
 pipeline {
+  agent any
+  stages {
+    stage("Run tests") {
   agent {
     dockerfile {
       filename 'Dockerfile'
@@ -10,9 +13,6 @@ pipeline {
       args '-v finder-chart-generator-venv:/venv -u 0:0'
     }
   }
-
-  stages {
-    stage("Run tests") {
       steps {
         sh 'echo $PATH'
         sh 'poetry export -f requirements.txt --with dev --output requirements.txt'
