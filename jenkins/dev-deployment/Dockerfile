@@ -1,4 +1,4 @@
-FROM python:3.9 AS requirements
+FROM python:3.10 AS requirements
 
 RUN apt-get update -y
 
