@@ -20,7 +20,6 @@ from imephu.salt.finder_chart import (
 )
 from imephu.salt.utils import MosMask
 from imephu.service.survey import load_fits
-from imephu.utils import MagnitudeRange
 from starlette import status
 from starlette.responses import StreamingResponse
 
