@@ -48,7 +48,9 @@ pipeline {
     always {
       echo "SUCCESS?: $success"
       unstash 'reports'
-      saao.createPythonTestReports()
+      script {
+        saao.createPythonTestReports()
+      }
 //       allure includeProperties: false, jdk: '', results: [[path: 'reports/allure']]
 //       recordIssues(tools: [flake8(pattern: 'reports/warnings-next-generation/flake8.txt'), myPy(pattern: 'reports/warnings-next-generation/mypy.txt')])
 
