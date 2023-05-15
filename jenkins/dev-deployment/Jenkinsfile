@@ -50,7 +50,7 @@ pipeline {
       echo "SUCCESS?: $success"
 //       unstash 'reports'
       script {
-        saao.createPythonTestReports()
+        saao.generatePythonTestReports()
       }
       //cleanWs deleteDirs: true, patterns: [[pattern: 'allure-report', type: 'EXCLUDE']]
 //       allure includeProperties: false, jdk: '', results: [[path: 'reports/allure']]
