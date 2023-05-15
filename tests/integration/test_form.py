@@ -7,4 +7,4 @@ def test_get_form(client: TestClient) -> None:
     response = client.get("/")
 
     # Then I get the form
-    assert response.status_code == status.HTTP_201_CREATED
+    assert response.status_code == status.HTTP_200_OK
