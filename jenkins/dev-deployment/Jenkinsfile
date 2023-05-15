@@ -6,13 +6,13 @@ pipeline {
   agent any
   stages {
     stage("Run tests") {
-  agent {
-    dockerfile {
-      filename 'Dockerfile'
-      dir 'jenkins/dev-deployment'
-      args '-v finder-chart-generator-venv:/venv -u 0:0'
-    }
-  }
+      agent {
+        dockerfile {
+          filename 'Dockerfile'
+          dir 'jenkins/dev-deployment'
+          args '-v finder-chart-generator-venv:/venv -u 0:0'
+        }
+      }
       steps {
         sh 'echo $PATH'
         sh 'poetry export -f requirements.txt --with dev --output requirements.txt'
@@ -27,6 +27,7 @@ pipeline {
 //             'pytest': ['tests']
 //          )
         }
+        cleanWs()
       }
     }
 //     stage("Deploy the site") {
