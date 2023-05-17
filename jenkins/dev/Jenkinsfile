@@ -16,10 +16,13 @@ pipeline {
               variable: 'FCG_CONFIG'
             )
           ]) {
-             sh "cat $FCG_CONFIG"
+             config = readJSON file: "$FCG_CONFIG"
           }
         }
       }
+    }
+    stage("Use config") {
+      echo "$config"
     }
   }
 
