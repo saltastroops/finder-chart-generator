@@ -5,44 +5,44 @@ def success = true
 pipeline {
   agent any
   stages {
-    stage("Run tests") {
-      agent {
-        dockerfile {
-          filename 'Dockerfile'
-          dir 'jenkins/dev-deployment'
-          args '-v finder-chart-generator-venv:/venv -u 0:0'
-        }
-      }
-      steps {
-        sh 'echo $PATH'
-        sh 'poetry export -f requirements.txt --with dev --output requirements.txt'
-        sh 'python -m pip install -r requirements.txt'
-        script {
-          success = saao.runPythonTests 'black': ['fcg', 'tests'], 'flake8': ['fcg', 'tests'], 'mypy': ['fcg', 'tests'], 'pytest': ['tests'], 'allure': true, 'warningsNextGeneration': true, reportsDir: 'generated-reports///whatever///'
-//             'bandit': ['fcg'],
-//             'black': ['fcg', 'tests'],
-//             'flake8': ['fcg', 'tests'],
-//             'isort': ['fcg', 'tests'],
-//             'mypy': ['fcg', 'tests'],
-//             'pytest': ['tests']
-//          )
-        }
-        cleanWs()
-      }
-    }
-//     stage("Deploy the site") {
-//       steps {
-//         script {
-//           saao.deployContainer(
-//             host: "${FCG_DEV_HOST}",
-//             hostCredentialsId: 'fcg-dev-server-credentials',
-//             imageName: 'finder-chart-generator',
-//             registryCredentialsId: 'docker-registry-credentials',
-//             registryUrl: "${DOCKER_REGISTRY}"
-//           )
+//     stage("Run tests") {
+//       agent {
+//         dockerfile {
+//           filename 'Dockerfile'
+//           dir 'jenkins/dev-deployment'
+//           args '-v finder-chart-generator-venv:/venv -u 0:0'
 //         }
 //       }
+//       steps {
+//         sh 'echo $PATH'
+//         sh 'poetry export -f requirements.txt --with dev --output requirements.txt'
+//         sh 'python -m pip install -r requirements.txt'
+//         script {
+//           success = saao.runPythonTests 'black': ['fcg', 'tests'], 'flake8': ['fcg', 'tests'], 'mypy': ['fcg', 'tests'], 'pytest': ['tests'], 'allure': true, 'warningsNextGeneration': true, reportsDir: 'generated-reports///whatever///'
+// //             'bandit': ['fcg'],
+// //             'black': ['fcg', 'tests'],
+// //             'flake8': ['fcg', 'tests'],
+// //             'isort': ['fcg', 'tests'],
+// //             'mypy': ['fcg', 'tests'],
+// //             'pytest': ['tests']
+// //          )
+//         }
+//         cleanWs()
+//       }
 //     }
+    stage("Deploy the site") {
+      steps {
+        script {
+          saao.deployContainer(
+            host: "${FCG_DEV_HOST}",
+            hostCredentialsId: 'fcg-dev-server-credentials',
+            imageName: 'finder-chart-generator',
+            registryCredentialsId: 'docker-registry-credentials',
+            registryUrl: "${DOCKER_REGISTRY}"
+          )
+        }
+      }
+    }
   }
 
   post {
