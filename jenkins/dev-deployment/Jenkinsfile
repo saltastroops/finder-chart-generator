@@ -34,6 +34,8 @@ pipeline {
       steps {
         script {
           saao.deployContainer(
+            dockerFile: 'jenkins/Dockerfile',
+            dockerComposeFile: 'jenkins/docker-compose.yml',
             host: "${FCG_DEV_HOST}",
             hostCredentialsId: 'fcg-dev-server-credentials',
             imageName: 'finder-chart-generator',
