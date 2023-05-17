@@ -1,4 +1,4 @@
-@Library('saao-shared-library@run-python-tests') _
+@Library('saao-shared-library@use-variables-for-files') _
 
 def success = true
 

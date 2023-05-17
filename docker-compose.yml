@@ -1,6 +1,6 @@
 services:
   fcg:
-    image: ${REGISTRY}/${REGISTRY_USERNAME}/${IMAGE_NAME}:${TAG}
+    image: ukulinga.com/saltastroops/finder-chart-generator:${TAG}
     ports:
       - 6789:8000
     restart: always
