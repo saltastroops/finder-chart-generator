@@ -47,11 +47,10 @@ pipeline {
 
   post {
     always {
-      echo "SUCCESS?: $success"
 //       unstash 'reports'
-      script {
-        saao.generatePythonTestReports()
-      }
+//       script {
+//         saao.generatePythonTestReports()
+//       }
       //cleanWs deleteDirs: true, patterns: [[pattern: 'allure-report', type: 'EXCLUDE']]
 //       allure includeProperties: false, jdk: '', results: [[path: 'reports/allure']]
 //       recordIssues(tools: [flake8(pattern: 'reports/warnings-next-generation/flake8.txt'), myPy(pattern: 'reports/warnings-next-generation/mypy.txt')])
