@@ -22,7 +22,9 @@ pipeline {
       }
     }
     stage("Use config") {
-      echo "$config"
+      steps {
+        echo "$config"
+      }
     }
   }
 
