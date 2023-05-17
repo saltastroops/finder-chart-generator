@@ -40,13 +40,14 @@ pipeline {
           )
         }
       }
-      post {
-        always {
-          script {
-            saao.generatePythonTestReports()
-          }
+    }
+  }
+
+    post {
+      always {
+        script {
+          saao.generatePythonTestReports()
         }
       }
     }
-  }
 }
