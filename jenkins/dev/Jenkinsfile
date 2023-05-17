@@ -1,0 +1,17 @@
+@Library('saao-shared-library')
+
+def config = [:]
+def success = true
+
+pipeline {
+  agent any
+
+  stages {
+    stage("Read configuration data") {
+      steps {
+        echo "Read configuration"
+      }
+    }
+  }
+
+}
