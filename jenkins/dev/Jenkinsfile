@@ -9,7 +9,16 @@ pipeline {
   stages {
     stage("Read configuration data") {
       steps {
-        echo "Read configuration"
+        script {
+          configFileProvider([
+            configFile(
+              fileId: 'finder-chart-generator-dev',
+              variable: 'FCG_CONFIG'
+            )
+          ]) {
+             sh "cat $FCG_CONFIG"
+          }
+        }
       }
     }
   }
