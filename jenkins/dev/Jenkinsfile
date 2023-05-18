@@ -17,6 +17,20 @@ pipeline {
             )
           ]) {
              config = readJSON file: "$FCG_CONFIG"
+
+             // Check that all configuration properties are given
+             requiredConfigProperties = [
+               'host',
+               'hostCredentialsId',
+               'emailRecipients',
+               'registryCredentialsId',
+               'registryUrl'
+             ]
+             for (property: requiredConfigProperties) {
+               if (!config.containsKey(property)) {
+                 error("The $property property is missing in the configuration file.")
+               }
+             }
           }
         }
       }
@@ -46,6 +60,12 @@ pipeline {
       }
     }
 
+    stage("Generate test reports") {
+      script {
+        saao.generatePythonTestReports()
+      }
+    }
+
     stage ("Deploy") {
       when { expression { success }}
       steps {
@@ -66,9 +86,13 @@ pipeline {
 
   post {
     always {
-      script {
-        saao.generatePythonTestReports()
-      }
+      emailext(
+        body: '''$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS:
+
+Check console output at $BUILD_URL to view the results.''',
+        subject: '$PROJECT_NAME - Build # $BUILD_NUMBER - $BUILD_STATUS!',
+        to: config.emailRecipients
+      )
     }
   }
 }

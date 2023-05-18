@@ -28,12 +28,13 @@ Finally, add the configuration as a JSON file and save your changes.
 
 The configuration file for the development server must be called `finder-chart-dev` and must have the following properties.
 
-| Property | Explanation                                               | Example value            |
-|---|-----------------------------------------------------------|--------------------------|
-| host | The deployment server.                                    | server.example.com       |
-| hostCredentialsId | The id of the credentials for the deployment server. | server-credentials       |
-| registryCredentialsId | The id of the container registry credentials (see below). | registry-credentials     |
-| registryUrl | URL of the container registry.                            | https://registry.example.com |
+| Property              | Explanation                                                                             | Example value                                               |
+|-----------------------|-----------------------------------------------------------------------------------------|-------------------------------------------------------------|
+| host                  | The deployment server.                                                                  | server.example.com                                          |
+| hostCredentialsId     | The id of the credentials for the deployment server.                                    | server-credentials                                          |
+| emailRecipients       | A comma-separated list of the email addresses which should receive notification emails. | Jane Miller <jane@example.com>, John Doe <john@example.com> |
+| registryCredentialsId | The id of the container registry credentials (see below).                               | registry-credentials                                        |
+| registryUrl           | URL of the container registry.                                                          | https://registry.example.com                                |
 
 An example configuration might look as follows.
 
@@ -60,3 +61,19 @@ Afterwards choose the "Credentials" option.
 ![Credentials option](doc%2Fimages%2Fcredentials.png)
 
 Add the credentials (and remember to save your changes).
+
+Finally, you need to configure the Extended Email plugin. Go back to the dashboard, again select the "Manage Jenkins" item from the sidebar menu and click on the "System" option.
+
+![System option](doc/images/system_option.png)
+
+Scroll down to the "Extended E-mail Notification" section and add the SMTP server details. Here is an example what the these might look like:
+
+![SMTP server configuration](doc/images/smtp_configuration.png)
+
+Note that, if required, you must have added the credentials to Jenkins beforehand. If you need to debug sending emails, enable the debug mode.
+
+![Enabling the debug mode](doc/images/enable_debug_mode.png)
+
+You should also set the system admin email address in the "Jenkins Location" section on the same page, as it is used in the From field of the sent emails.
+
+![System admin email address](doc/images/system_admin_email.png)
