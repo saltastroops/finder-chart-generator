@@ -35,7 +35,7 @@ pipeline {
         sh 'poetry export -f requirements.txt --with dev --output requirements.txt'
         sh 'python -m pip install -r requirements.txt'
         script {
-          success = saao.runPythonTests(
+          saao.runPythonTests(
             "black": ["fcg", "tests"],
             "flake8": ["fcg", "tests"],
             "isort": ["fcg", "tests"],
