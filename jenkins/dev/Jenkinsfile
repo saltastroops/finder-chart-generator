@@ -26,7 +26,7 @@ pipeline {
                'registryCredentialsId',
                'registryUrl'
              ]
-             for (property: requiredConfigProperties) {
+             for (property in requiredConfigProperties) {
                if (!config.containsKey(property)) {
                  error("The $property property is missing in the configuration file.")
                }
