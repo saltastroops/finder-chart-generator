@@ -69,7 +69,7 @@ Finally, you need to configure the Extended Email plugin. Go back to the dashboa
 
 ![System option](doc/images/system_option.png)
 
-Scroll down to the "Extended E-mail Notification" section and add the SMTP server details. Here is an example what the these might look like:
+Scroll down to the "Extended E-mail Notification" section and add the SMTP server details. Here is an example of what these might look like:
 
 ![SMTP server configuration](doc/images/smtp_configuration.png)
 
@@ -80,3 +80,5 @@ Note that, if required, you must have added the credentials to Jenkins beforehan
 You should also set the system admin email address in the "Jenkins Location" section on the same page, as it is used in the From field of the sent emails.
 
 ![System admin email address](doc/images/system_admin_email.png)
+
+Remember to click the Save button at the bottom of the page when you are done.
