@@ -26,6 +26,7 @@ pipeline {
                'registryCredentialsId',
                'registryUrl'
              ]
+             echo "$config"
              for (property in requiredConfigProperties) {
                if (!config.containsKey(property)) {
                  error("The $property property is missing in the configuration file.")
@@ -49,7 +50,7 @@ pipeline {
         sh 'poetry export -f requirements.txt --with dev --output requirements.txt'
         sh 'python -m pip install -r requirements.txt'
         script {
-          saao.runPythonTests(
+          success = saao.runPythonTests(
             "black": ["fcg", "tests"],
             "flake8": ["fcg", "tests"],
             "isort": ["fcg", "tests"],
