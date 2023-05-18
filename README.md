@@ -28,13 +28,15 @@ Finally, add the configuration as a JSON file and save your changes.
 
 The configuration file for the development server must be called `finder-chart-dev` and must have the following properties.
 
-| Property              | Explanation                                                                             | Example value                                               |
-|-----------------------|-----------------------------------------------------------------------------------------|-------------------------------------------------------------|
-| host                  | The deployment server.                                                                  | server.example.com                                          |
-| hostCredentialsId     | The id of the credentials for the deployment server.                                    | server-credentials                                          |
-| emailRecipients       | A comma-separated list of the email addresses which should receive notification emails. | Jane Miller <jane@example.com>, John Doe <john@example.com> |
-| registryCredentialsId | The id of the container registry credentials (see below).                               | registry-credentials                                        |
-| registryUrl           | URL of the container registry.                                                          | https://registry.example.com                                |
+| Property              | Explanation                                                                                              | Example value                                               |
+|-----------------------|----------------------------------------------------------------------------------------------------------|-------------------------------------------------------------|
+| host                  | The deployment server.                                                                                   | server.example.com                                          |
+| hostCredentialsId     | The id of the credentials for the deployment server.                                                     | server-credentials                                          |
+| emailRecipients       | A comma-separated list of the email addresses which should receive notification emails (see note below). | Jane Miller <jane@example.com>, John Doe <john@example.com> |
+| registryCredentialsId | The id of the container registry credentials (see below).                                                | registry-credentials                                        |
+| registryUrl           | URL of the container registry.                                                                           | https://registry.example.com                                |
+
+If the list of email recipients contains a single address only and you want to include the recipient's name (as in `Jane Miller <jane@example>`), you have to add a comma at the end of the string (as in `Jane Miller <jane@example>,`), as otherwise the words of the name are interpreted as email addresses.
 
 An example configuration might look as follows.
 
@@ -42,6 +44,7 @@ An example configuration might look as follows.
 {
   "host": "dev.example.com",
   "hostCredentialsId": "server-credentials",
+  "emailRecipients": "Jane Miller <jane@example.com>,",
   "registryCredentialsId": "registry-credentials",
   "registryUrl": "https://registry.example.com"
 }
