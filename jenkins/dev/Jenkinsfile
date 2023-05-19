@@ -49,18 +49,21 @@ pipeline {
         sh 'poetry export -f requirements.txt --with dev --without-hashes --output requirements.txt'
         sh 'python -m pip install -r requirements.txt'
         script {
+          echo "SUCCESS-1? -- $success"
           success = saao.runPythonTests(
             "black": ["fcg", "tests"],
             "ruff": ["fcg", "tests"],
             "mypy": ["fcg", "tests"],
             "pytest": ["tests"]
           )
+          echo "SUCCESS-2? -- $success"
         }
       }
     }
 
     stage("Generate test reports") {
       steps {
+        echo "SUCCESS-3? -- $success"
         script {
           saao.generatePythonTestReports()
         }
