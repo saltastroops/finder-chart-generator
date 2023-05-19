@@ -46,7 +46,7 @@ pipeline {
       }
       steps {
         sh 'echo $PATH'
-        sh 'poetry export -f requirements.txt --with dev --output requirements.txt'
+        sh 'poetry export -f requirements.txt --with dev --without-hashes --output requirements.txt'
         sh 'python -m pip install -r requirements.txt'
         script {
           success = saao.runPythonTests(
