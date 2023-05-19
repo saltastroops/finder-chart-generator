@@ -1,4 +1,4 @@
-@Library('saao-shared-library')
+@Library('saao-shared-library@move-to-ruff')
 
 def config = [:]
 def success = true
