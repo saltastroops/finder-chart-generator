@@ -2,7 +2,6 @@ from typing import Any, Literal
 
 from fastapi import Request
 
-
 OutputFormat = Literal["pdf", "png"]
 
 

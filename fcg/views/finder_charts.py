@@ -2,21 +2,21 @@ import logging
 import pathlib
 import tempfile
 from io import BytesIO
-from typing import Tuple, cast, BinaryIO
+from typing import BinaryIO, Tuple, cast
 
-from astropy.coordinates import SkyCoord, Angle
 from astropy import units as u
+from astropy.coordinates import Angle, SkyCoord
 from fastapi import APIRouter, Request, Response, UploadFile
 from fastapi.responses import JSONResponse
 from imephu.finder_chart import FinderChart
 from imephu.salt.finder_chart import (
     GeneralProperties,
     Target,
-    nir_finder_chart,
     hrs_finder_chart,
-    salticam_finder_chart,
+    nir_finder_chart,
     rss_longslit_finder_chart,
     rss_mos_finder_chart,
+    salticam_finder_chart,
 )
 from imephu.salt.utils import MosMask
 from imephu.service.survey import load_fits

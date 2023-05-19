@@ -1,11 +1,10 @@
 from io import BytesIO
-from typing import Any, Tuple, BinaryIO, Callable
+from typing import BinaryIO, Callable, Tuple
 
 import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 from starlette import status
-
 
 _CheckImage = Callable[[bytes], None]
 
