@@ -2,7 +2,7 @@ import logging
 import pathlib
 import tempfile
 from io import BytesIO
-from typing import BinaryIO, Tuple, cast
+from typing import Tuple, BinaryIO, cast
 
 from astropy import units as u
 from astropy.coordinates import Angle, SkyCoord
