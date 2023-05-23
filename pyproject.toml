@@ -23,6 +23,7 @@ httpx = "^0.24.0"
 pytest-regressions = "^2.4.2"
 pillow = "^9.5.0"
 ruff = "^0.0.269"
+types-pillow = "^9.5.0.4"
 
 [build-system]
 requires = ["poetry-core"]

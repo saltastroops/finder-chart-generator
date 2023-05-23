@@ -144,7 +144,7 @@ def parse_background_image(
         return None
     elif "image_survey" in form:
         if form.get("image_survey"):
-            survey = form.get("image_survey")
+            survey = cast(str, form.get("image_survey"))
             if _is_position_covered_by_survey(form, survey):
                 return survey
             else:
@@ -157,7 +157,7 @@ def parse_background_image(
             errors["image_survey"] = "The image survey is missing."
             return None
     elif "custom_fits" in form:
-        if form.get("custom_fits").size > 0:
+        if cast(int, cast(UploadFile, form.get("custom_fits")).size) > 0:
             return cast(UploadFile, form.get("custom_fits"))
         else:
             errors["custom_fits"] = "The custom FITS file is missing."
@@ -168,7 +168,7 @@ def parse_background_image(
 
 
 def parse_output_format(form: FormData, errors: dict[str, str]) -> OutputFormat | None:
-    output_format = form.get("output_format", "pdf").strip()
+    output_format = cast(str, form.get("output_format", "pdf")).strip()
     match output_format.lower():
         case "pdf":
             return "pdf"
@@ -181,8 +181,10 @@ def parse_output_format(form: FormData, errors: dict[str, str]) -> OutputFormat 
 
 def _is_position_covered_by_survey(form: FormData, survey: str) -> bool:
     try:
-        right_ascension = parse.parse_right_ascension(form.get("right_ascension", ""))
-        declination = parse.parse_declination(form.get("declination", ""))
+        right_ascension = parse.parse_right_ascension(
+            cast(str, form.get("right_ascension", ""))
+        )
+        declination = parse.parse_declination(cast(str, form.get("declination", "")))
     except ValueError:
         return True
     return is_covering_position(survey, SkyCoord(ra=right_ascension, dec=declination))

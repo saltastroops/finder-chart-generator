@@ -1024,6 +1024,14 @@ doc = ["cairosvg (>=2.5.2,<3.0.0)", "mdx-include (>=1.4.1,<2.0.0)", "mkdocs (>=1
 test = ["black (>=22.3.0,<23.0.0)", "coverage (>=6.2,<7.0)", "isort (>=5.0.6,<6.0.0)", "mypy (==0.910)", "pytest (>=4.4.0,<8.0.0)", "pytest-cov (>=2.10.0,<5.0.0)", "pytest-sugar (>=0.9.4,<0.10.0)", "pytest-xdist (>=1.32.0,<4.0.0)", "rich (>=10.11.0,<14.0.0)", "shellingham (>=1.3.0,<2.0.0)"]
 
 [[package]]
+name = "types-pillow"
+version = "9.5.0.4"
+description = "Typing stubs for Pillow"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "typing-extensions"
 version = "4.5.0"
 description = "Backported and Experimental Type Hints for Python 3.7+"
@@ -1133,7 +1141,7 @@ testing = ["big-O", "flake8 (<5)", "jaraco.functools", "jaraco.itertools", "more
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "999c6e34aa197ea7a241ebbcfc5d090299250fc01784615a6efdaac2482b4244"
+content-hash = "14df6c5582a44907af1cfc41a059269470e70e1b100a2d5f4ceda9394e9d1760"
 
 [metadata.files]
 aiohttp = [
@@ -2392,6 +2400,10 @@ tomli = [
 typer = [
     {file = "typer-0.9.0-py3-none-any.whl", hash = "sha256:5d96d986a21493606a358cae4461bd8cdf83cbf33a5aa950ae629ca3b51467ee"},
     {file = "typer-0.9.0.tar.gz", hash = "sha256:50922fd79aea2f4751a8e0408ff10d2662bd0c8bbfa84755a699f3bada2978b2"},
+]
+types-pillow = [
+    {file = "types-Pillow-9.5.0.4.tar.gz", hash = "sha256:f1b6af47abd151847ee25911ffeba784899bc7dc7f9eba8ca6a5aac522b012ef"},
+    {file = "types_Pillow-9.5.0.4-py3-none-any.whl", hash = "sha256:69427d9fa4320ff6e30f00fb9c0dd71185dc0a16de4757774220104759483466"},
 ]
 typing-extensions = [
     {file = "typing_extensions-4.5.0-py3-none-any.whl", hash = "sha256:fb33085c39dd998ac16d1431ebc293a8b3eedd00fd4a32de0ff79002c19511b4"},

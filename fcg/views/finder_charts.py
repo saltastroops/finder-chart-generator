@@ -2,11 +2,11 @@ import logging
 import pathlib
 import tempfile
 from io import BytesIO
-from typing import Tuple, BinaryIO, cast
+from typing import BinaryIO, Tuple, cast
 
 from astropy import units as u
 from astropy.coordinates import Angle, SkyCoord
-from fastapi import APIRouter, Request, Response, UploadFile
+from fastapi import APIRouter, Request, Response
 from fastapi.responses import JSONResponse
 from imephu.finder_chart import FinderChart
 from imephu.salt.finder_chart import (
@@ -21,6 +21,7 @@ from imephu.salt.finder_chart import (
 from imephu.salt.utils import MosMask
 from imephu.service.survey import load_fits
 from starlette import status
+from starlette.datastructures import UploadFile
 from starlette.responses import StreamingResponse
 
 from fcg.viewmodels.base_viewmodel import OutputFormat
@@ -155,7 +156,7 @@ async def _mos(request: Request) -> Response:
             {"errors": vm.errors}, status_code=status.HTTP_400_BAD_REQUEST
         )
 
-    mos_mask = await _mos_mask(vm.mos_mask_file)
+    mos_mask = await _mos_mask(cast(UploadFile, vm.mos_mask_file))
     position = mos_mask.center
     survey, fits = _fits_details(vm.background_image, position)
     general_properties = _general_properties(
@@ -236,8 +237,8 @@ def _general_properties(
     target: str,
     position: SkyCoord,
     position_angle: Angle,
-    survey: str | None = None,
-):
+    survey: str = "",
+) -> GeneralProperties:
     return GeneralProperties(
         target=Target(
             name=target,
@@ -253,15 +254,15 @@ def _general_properties(
 
 
 def _fits_details(
-    background_image: str | UploadFile | None, position: SkyCoord
-) -> Tuple[str | None, BinaryIO]:
+    background_image: str | UploadFile, position: SkyCoord
+) -> Tuple[str, BinaryIO]:
     if type(background_image) == str:
-        survey = cast(str, background_image)
+        survey = background_image
         return survey, load_fits(
             survey=survey, fits_center=position, size=10 * u.arcmin
         )
     elif hasattr(background_image, "file"):
-        survey = None
+        survey = ""
         return survey, cast(UploadFile, background_image).file
     else:
         # Should never happen...
