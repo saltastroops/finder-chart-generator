@@ -37,7 +37,7 @@ def parse_right_ascension(text: str) -> Angle:
         text = text + "d"
     try:
         angle = Angle(text)
-    except ValueError:
+    except BaseException:
         raise ValueError(error) from None
     if angle.degree < 0 or angle.degree > 360:
         raise ValueError(error)
