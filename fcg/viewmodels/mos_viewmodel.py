@@ -4,15 +4,13 @@ from fastapi import Request
 from starlette.datastructures import UploadFile
 
 from fcg.viewmodels import parse
-from fcg.viewmodels.base_viewmodel import BaseViewModel, OutputFormat
+from fcg.viewmodels.form_base_viewmodel import FormBaseViewModel
+from fcg.infrastructure.types import OutputFormat
 
 
-class MosViewModel(BaseViewModel):
+class MosViewModel(FormBaseViewModel):
     def __init__(self, request: Request):
         super().__init__(request)
-        self.proposal_code = ""
-        self.principal_investigator = ""
-        self.target = ""
         self.mos_mask_file: UploadFile | None = None
         self.background_image: str | UploadFile = ""
         self.output_format: OutputFormat = "pdf"
@@ -21,16 +19,7 @@ class MosViewModel(BaseViewModel):
     async def load(self) -> None:
         form = await self.request.form()
 
-        # proposal code
-        self.proposal_code = parse.parse_proposal_code(form, self.errors) or ""
-
-        # Principal Investigator
-        self.principal_investigator = (
-            parse.parse_principal_investigator(form, self.errors) or ""
-        )
-
-        # target
-        self.target = parse.parse_target(form, self.errors) or ""
+        super().load_common_data(form)
 
         # MOS mask file
         self.mos_mask_file = cast(

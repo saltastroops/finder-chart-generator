@@ -3,15 +3,13 @@ from fastapi import Request
 from starlette.datastructures import UploadFile
 
 from fcg.viewmodels import parse
-from fcg.viewmodels.base_viewmodel import BaseViewModel, OutputFormat
+from fcg.viewmodels.form_base_viewmodel import FormBaseViewModel
+from fcg.infrastructure.types import OutputFormat
 
 
-class HrsViewModel(BaseViewModel):
+class HrsViewModel(FormBaseViewModel):
     def __init__(self, request: Request):
         super().__init__(request)
-        self.proposal_code = ""
-        self.principal_investigator = ""
-        self.target = ""
         self.right_ascension: Angle = Angle("0deg")
         self.declination: Angle = Angle("0deg")
         self.position_angle: Angle = Angle("0deg")
@@ -22,16 +20,7 @@ class HrsViewModel(BaseViewModel):
     async def load(self) -> None:
         form = await self.request.form()
 
-        # proposal code
-        self.proposal_code = parse.parse_proposal_code(form, self.errors) or ""
-
-        # Principal Investigator
-        self.principal_investigator = (
-            parse.parse_principal_investigator(form, self.errors) or ""
-        )
-
-        # target
-        self.target = parse.parse_target(form, self.errors) or ""
+        super().load_common_data(form)
 
         # right ascension
         self.right_ascension = parse.parse_right_ascension(form, self.errors) or Angle(

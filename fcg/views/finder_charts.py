@@ -24,7 +24,7 @@ from starlette import status
 from starlette.datastructures import UploadFile
 from starlette.responses import StreamingResponse
 
-from fcg.viewmodels.base_viewmodel import OutputFormat
+from fcg.infrastructure.types import OutputFormat
 from fcg.viewmodels.hrs_viewmodel import HrsViewModel
 from fcg.viewmodels.imaging_viewmodel import ImagingViewModel
 from fcg.viewmodels.longslit_viewmodel import LongslitViewModel
