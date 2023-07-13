@@ -42,11 +42,10 @@ Environment variables can be set via Manage Jenkins - Configure System (cf. [thi
 
 The following credentials need to be defined.
 
-| Credentials id   | Credentials type              | Description                                            |
-|------------------|-------------------------------|--------------------------------------------------------|
-| finder_chart_generator_dev_host | SSH username with private key | Username on the development server and private SSH key |
-| finder_chart_generator_host     | SSH username with private key | Username on the production server and private SSH key  |
-| finder_chart_generator_registry | Username with password | Username and password for the container registry       |
+| Credentials id                  | Credentials type              | Description                                           |
+|---------------------------------|-------------------------------|-------------------------------------------------------|
+| finder_chart_generator_host     | SSH username with private key | Username on the production server and private SSH key |
+| finder_chart_generator_registry | Username with password        | Username and password for the container registry      |
 
 See the section "SSH keys" above for details regarding the SSH keys.
 

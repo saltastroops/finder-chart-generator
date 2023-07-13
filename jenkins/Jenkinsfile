@@ -34,7 +34,7 @@ pipeline {
       }
     }
 
-    stage('Deploy to development server') {
+    stage('Deploy to production server') {
       when {
         branch 'jenkins'
       }
@@ -44,28 +44,9 @@ pipeline {
                   'dockerComposeFile': 'docker-compose.yml',
                   'dockerFile': 'Dockerfile',
                   'host': 'ssdadev.cape.saao.ac.za',
-                  'hostCredentialsId': 'saltapi_dev_host',
+                  'hostCredentialsId': 'finder_chart_generator_host',
                   'imageName': 'finder-chart-generator',
-                  'registryCredentialsId': 'saltapi_registry',
-                  'registryUrl': 'http://ukulinga.com'
-          )
-        }
-      }
-    }
-
-    stage('Deploy to production server') {
-      when {
-        branch 'main'
-      }
-      steps {
-        script {
-          saao.deployContainer(
-                  'dockerComposeFile': 'docker-compose.yml',
-                  'dockerFile': 'Dockerfile',
-                  'host': 'www.example.com',
-                  'hostCredentialsId': 'saltapi_host',
-                  'imageName': 'saltapi',
-                  'registryCredentialsId': 'saltapi_registry',
+                  'registryCredentialsId': 'finder_chart_generator_registry',
                   'registryUrl': 'http://ukulinga.com'
           )
         }
