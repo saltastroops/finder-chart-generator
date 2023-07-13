@@ -12,8 +12,8 @@ class NirViewModel(FormBaseViewModel):
         super().__init__(request)
         self.right_ascension: Angle = Angle("0deg")
         self.declination: Angle = Angle("0deg")
-        self.science_bundle_right_ascension: Angle = Angle("0deg")
-        self.science_bundle_declination: Angle = Angle("0deg")
+        self.reference_star_right_ascension: Angle = Angle("0deg")
+        self.reference_star_declination: Angle = Angle("0deg")
         self.nir_bundle_separation: Angle = Angle("0deg")
         self.position_angle: Angle = Angle("0deg")
         self.background_image: str | UploadFile = ""
@@ -33,13 +33,13 @@ class NirViewModel(FormBaseViewModel):
         # declination
         self.declination = parse.parse_declination(form, self.errors) or Angle("0deg")
 
-        # science bundle right ascension
-        self.science_bundle_right_ascension = (
-            parse.parse_science_bundle_right_ascension(form, self.errors)
+        # reference star right ascension
+        self.reference_star_right_ascension = (
+            parse.parse_reference_star_right_ascension(form, self.errors)
         ) or Angle("0deg")
 
-        # science bundle declination
-        self.science_bundle_declination = parse.parse_science_bundle_declination(
+        # reference star declination
+        self.reference_star_declination = parse.parse_reference_star_declination(
             form, self.errors
         ) or Angle("0deg")
 

@@ -137,9 +137,17 @@ async def _longslit(request: Request) -> Response:
         position_angle=vm.position_angle,
         survey=survey,
     )
+    reference_star = (
+        SkyCoord(
+            ra=vm.reference_star_right_ascension, dec=vm.reference_star_declination
+        )
+        if vm.reference_star_right_ascension
+        else None
+    )
     finder_chart = rss_longslit_finder_chart(
         fits=fits,
         general=general_properties,
+        reference_star=reference_star,
         slit_width=vm.slit_width,
         slit_height=8 * u.arcmin,
     )
@@ -193,13 +201,17 @@ async def _nir(request: Request) -> Response:
         position_angle=vm.position_angle,
         survey=survey,
     )
-    science_bundle_center = SkyCoord(
-        ra=vm.science_bundle_right_ascension, dec=vm.science_bundle_declination
+    reference_star = (
+        SkyCoord(
+            ra=vm.reference_star_right_ascension, dec=vm.reference_star_declination
+        )
+        if vm.reference_star_right_ascension
+        else None
     )
     finder_chart = nir_finder_chart(
         fits=fits,
         general=general_properties,
-        science_bundle_center=science_bundle_center,
+        reference_star=reference_star,
         bundle_separation=vm.nir_bundle_separation,
     )
     return _finder_chart_stream(finder_chart, vm.output_format)

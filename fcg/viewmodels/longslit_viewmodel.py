@@ -12,6 +12,8 @@ class LongslitViewModel(FormBaseViewModel):
         super().__init__(request)
         self.right_ascension: Angle = Angle("0deg")
         self.declination: Angle = Angle("0deg")
+        self.reference_star_right_ascension: Angle = Angle("0deg")
+        self.reference_star_declination: Angle = Angle("0deg")
         self.slit_width: Angle = Angle("0deg")
         self.background_image: str | UploadFile = ""
         self.output_format: OutputFormat = "pdf"
@@ -29,6 +31,16 @@ class LongslitViewModel(FormBaseViewModel):
 
         # declination
         self.declination = parse.parse_declination(form, self.errors) or Angle("0deg")
+
+        # reference star right ascension
+        self.reference_star_right_ascension = (
+            parse.parse_reference_star_right_ascension(form, self.errors)
+        ) or Angle("0deg")
+
+        # reference star declination
+        self.reference_star_declination = parse.parse_reference_star_declination(
+            form, self.errors
+        ) or Angle("0deg")
 
         # position angle
         self.position_angle = parse.parse_position_angle(form, self.errors) or Angle(

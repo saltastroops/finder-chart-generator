@@ -155,28 +155,36 @@ def parse_mos_mask_file(form: FormData, errors: dict[str, str]) -> UploadFile | 
     return mos_mask_file
 
 
-def parse_science_bundle_right_ascension(
+def parse_reference_star_right_ascension(
     form: FormData, errors: dict[str, str]
 ) -> Angle | None:
+    if not form.get("reference_star_right_ascension") and not form.get(
+        "reference_star_declination"
+    ):
+        return None
     return parse.parse_generic_form_field(
         form=form,
-        field="science_bundle_right_ascension",
+        field="reference_star_right_ascension",
         parse_func=parse.parse_right_ascension,
-        missing_message="The right ascension of the science bundle is missing.",
-        error_id="science_bundle_right_ascension",
+        missing_message="The right ascension of the reference star is missing.",
+        error_id="reference_star_right_ascension",
         errors=errors,
     )
 
 
-def parse_science_bundle_declination(
+def parse_reference_star_declination(
     form: FormData, errors: dict[str, str]
 ) -> Angle | None:
+    if not form.get("reference_star_right_ascension") and not form.get(
+        "reference_star_declination"
+    ):
+        return None
     return parse.parse_generic_form_field(
         form=form,
-        field="science_bundle_declination",
+        field="reference_star_declination",
         parse_func=parse.parse_declination,
-        missing_message="The declination of the science bundle is missing.",
-        error_id="science_bundle_declination",
+        missing_message="The declination of the reference star is missing.",
+        error_id="reference_star_declination",
         errors=errors,
     )
 
