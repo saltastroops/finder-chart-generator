@@ -46,7 +46,8 @@ def check_image(file_regression: FileRegressionFixture) -> Callable[[bytes], Non
         # environment, which may lead to spurious test failures.
         if img1.size != img2.size:
             warnings.warn(
-                "The image size has changed, and the regression test is skipped. "
+                "The image size has changed, and the regression test is skipped.",
+                stacklevel=3,
             )
             return
 
