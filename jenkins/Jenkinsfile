@@ -36,7 +36,7 @@ pipeline {
 
     stage('Deploy to production server') {
       when {
-        branch 'jenkins'
+        branch 'main'
       }
       steps {
         script {
