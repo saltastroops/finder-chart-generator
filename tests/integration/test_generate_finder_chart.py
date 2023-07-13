@@ -1,11 +1,10 @@
-from io import BytesIO
-from typing import Any, Tuple, BinaryIO, Callable
+from io import BufferedReader, BytesIO
+from typing import Callable, Tuple
 
 import numpy as np
 import pytest
 from fastapi.testclient import TestClient
 from starlette import status
-
 
 _CheckImage = Callable[[bytes], None]
 
@@ -13,7 +12,7 @@ _CheckImage = Callable[[bytes], None]
 _URL = "/finder-charts"
 
 
-def _valid_input(mode: str) -> Tuple[dict[str, str], dict[str, BinaryIO]]:
+def _valid_input(mode: str) -> Tuple[dict[str, str], dict[str, BufferedReader]]:
     data = {
         "proposal_code": "2023-1-SCI-042",
         "principal_investigator": "Adams",
@@ -66,7 +65,7 @@ def test_mode_is_case_insensitive(mode: str, client: TestClient) -> None:
     assert "__general" not in errors
 
 
-def test_generate_for_hrs_with_missing_values(client: TestClient):
+def test_generate_for_hrs_with_missing_values(client: TestClient) -> None:
     missing_values = [
         ("proposal_code", "proposal code"),
         ("principal_investigator", "Principal Investigator"),
@@ -92,7 +91,7 @@ def test_generate_for_hrs(client: TestClient, check_image: _CheckImage) -> None:
     check_image(response.content)
 
 
-def test_generate_for_imaging_with_missing_values(client: TestClient):
+def test_generate_for_imaging_with_missing_values(client: TestClient) -> None:
     missing_values = [
         ("proposal_code", "proposal code"),
         ("principal_investigator", "Principal Investigator"),
@@ -117,7 +116,7 @@ def test_generate_for_imaging(client: TestClient, check_image: _CheckImage) -> N
     check_image(response.content)
 
 
-def test_generate_for_longslit_with_missing_values(client: TestClient):
+def test_generate_for_longslit_with_missing_values(client: TestClient) -> None:
     missing_values = [
         ("proposal_code", "proposal code"),
         ("principal_investigator", "Principal Investigator"),
@@ -143,7 +142,7 @@ def test_generate_for_longslit(client: TestClient, check_image: _CheckImage) -> 
     check_image(response.content)
 
 
-def test_generate_for_mos_with_missing_values(client: TestClient):
+def test_generate_for_mos_with_missing_values(client: TestClient) -> None:
     missing_values = [
         ("proposal_code", "proposal code"),
         ("principal_investigator", "Principal Investigator"),
@@ -166,7 +165,7 @@ def test_generate_for_mos(client: TestClient, check_image: _CheckImage) -> None:
     check_image(response.content)
 
 
-def test_generate_for_nir_with_missing_values(client: TestClient):
+def test_generate_for_nir_with_missing_values(client: TestClient) -> None:
     missing_values = [
         ("proposal_code", "proposal code"),
         ("principal_investigator", "Principal Investigator"),
@@ -194,7 +193,7 @@ def test_generate_for_nir(client: TestClient, check_image: _CheckImage) -> None:
     check_image(response.content)
 
 
-def test_generate_for_slotmode_with_missing_values(client: TestClient):
+def test_generate_for_slotmode_with_missing_values(client: TestClient) -> None:
     missing_values = [
         ("proposal_code", "proposal code"),
         ("principal_investigator", "Principal Investigator"),

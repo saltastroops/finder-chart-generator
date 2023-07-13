@@ -1,5 +1,5 @@
 black fcg tests && \
-isort fcg tests && \
-flake8 fcg tests && \
+bandit -r fcg && \
+ruff fcg tests && \
 mypy fcg tests && \
 pytest

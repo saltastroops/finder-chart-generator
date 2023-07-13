@@ -1,48 +1,44 @@
 from astropy.coordinates import Angle
-from fastapi import Request, UploadFile
+from fastapi import Request
+from starlette.datastructures import UploadFile
 
+from fcg.infrastructure.types import OutputFormat
 from fcg.viewmodels import parse
-from fcg.viewmodels.base_viewmodel import BaseViewModel, OutputFormat
+from fcg.viewmodels.form_base_viewmodel import FormBaseViewModel
 
 
-class ImagingViewModel(BaseViewModel):
+class ImagingViewModel(FormBaseViewModel):
     def __init__(self, request: Request):
         super().__init__(request)
-        self.proposal_code = ""
-        self.principal_investigator = ""
-        self.target = ""
-        self.right_ascension: Angle | None = None
-        self.declination: Angle | None = None
-        self.position_angle: Angle | None = None
-        self.background_image: str | UploadFile | None = None
-        self.output_format: OutputFormat | None = None
+        self.right_ascension: Angle = Angle("0deg")
+        self.declination: Angle = Angle("0deg")
+        self.position_angle: Angle = Angle("0deg")
+        self.background_image: str | UploadFile = ""
+        self.output_format: OutputFormat = "pdf"
         self.errors: dict[str, str] = dict()
 
     async def load(self) -> None:
         form = await self.request.form()
 
-        # proposal code
-        self.proposal_code = parse.parse_proposal_code(form, self.errors)
-
-        # Principal Investigator
-        self.principal_investigator = parse.parse_principal_investigator(
-            form, self.errors
-        )
-
-        # target
-        self.target = parse.parse_target(form, self.errors)
+        super().load_common_data(form)
 
         # right ascension
-        self.right_ascension = parse.parse_right_ascension(form, self.errors)
+        self.right_ascension = parse.parse_right_ascension(form, self.errors) or Angle(
+            "0deg"
+        )
 
         # declination
-        self.declination = parse.parse_declination(form, self.errors)
+        self.declination = parse.parse_declination(form, self.errors) or Angle("0deg")
 
         # position angle
-        self.position_angle = parse.parse_position_angle(form, self.errors)
+        self.position_angle = parse.parse_position_angle(form, self.errors) or Angle(
+            "0deg"
+        )
 
         # background image
-        self.background_image = parse.parse_background_image(form, self.errors)
+        self.background_image = parse.parse_background_image(
+            form, self.errors
+        ) or Angle("0deg")
 
         # output format
-        self.output_format = parse.parse_output_format(form, self.errors)
+        self.output_format = parse.parse_output_format(form, self.errors) or "pdf"

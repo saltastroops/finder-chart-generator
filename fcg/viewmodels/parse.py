@@ -4,8 +4,8 @@ from astropy.coordinates import Angle, SkyCoord
 from imephu.service.survey import is_covering_position
 from starlette.datastructures import FormData, UploadFile
 
-from fcg.viewmodels.base_viewmodel import OutputFormat
 from fcg.infrastructure import parse
+from fcg.infrastructure.types import MagnitudeRange, OutputFormat
 
 
 def parse_proposal_code(form: FormData, errors: dict[str, str]) -> str | None:
@@ -39,6 +39,64 @@ def parse_target(form: FormData, errors: dict[str, str]) -> str | None:
         error_id="target",
         errors=errors,
     )
+
+
+def parse_magnitude_range(
+    form: FormData, errors: dict[str, str]
+) -> MagnitudeRange | None:
+    min_magnitude_value = form.get("min_magnitude")
+    max_magnitude_value = form.get("max_magnitude")
+    bandpass_value = form.get("bandpass")
+    non_none_count = (
+        (1 if min_magnitude_value is not None else 0)
+        + (1 if max_magnitude_value is not None else 0)
+        + (1 if bandpass_value is not None else 0)
+    )
+    if non_none_count == 0:
+        return None
+    elif non_none_count == 3:
+        min_magnitude = parse.parse_generic_form_field(
+            form=form,
+            field="min_magnitude",
+            parse_func=parse.parse_float,
+            missing_message="The minimum magnitude is missing.",
+            error_id="magnitude_range",
+            errors=errors,
+        )
+        max_magnitude = parse.parse_generic_form_field(
+            form=form,
+            field="max_magnitude",
+            parse_func=parse.parse_float,
+            missing_message="The maximum magnitude is missing.",
+            error_id="magnitude_range",
+            errors=errors,
+        )
+        bandpass = parse.parse_generic_form_field(
+            form=form,
+            field="bandpass",
+            parse_func=lambda s: s,
+            missing_message="The bandpass is missing.",
+            error_id="magnitude_range",
+            errors=errors,
+        )
+        if min_magnitude is None or max_magnitude is None or bandpass is None:
+            return None
+
+        if max_magnitude < min_magnitude:
+            errors["magnitude_range"] = (
+                "The minimum magnitude must not be greater "
+                "than the maximum magnitude."
+            )
+            return None
+
+        return MagnitudeRange(
+            min_magnitude=min_magnitude, max_magnitude=max_magnitude, bandpass=bandpass
+        )
+    else:
+        errors[
+            "magnitude_range"
+        ] = "A minimum magnitude, maximum magnitude and bandpass must be specified for a magnitude range."
+        return None
 
 
 def parse_right_ascension(form: FormData, errors: dict[str, str]) -> Angle | None:
@@ -144,7 +202,7 @@ def parse_background_image(
         return None
     elif "image_survey" in form:
         if form.get("image_survey"):
-            survey = form.get("image_survey")
+            survey = cast(str, form.get("image_survey"))
             if _is_position_covered_by_survey(form, survey):
                 return survey
             else:
@@ -157,7 +215,7 @@ def parse_background_image(
             errors["image_survey"] = "The image survey is missing."
             return None
     elif "custom_fits" in form:
-        if form.get("custom_fits").size > 0:
+        if cast(int, cast(UploadFile, form.get("custom_fits")).size) > 0:
             return cast(UploadFile, form.get("custom_fits"))
         else:
             errors["custom_fits"] = "The custom FITS file is missing."
@@ -168,7 +226,7 @@ def parse_background_image(
 
 
 def parse_output_format(form: FormData, errors: dict[str, str]) -> OutputFormat | None:
-    output_format = form.get("output_format", "pdf").strip()
+    output_format = cast(str, form.get("output_format", "pdf")).strip()
     match output_format.lower():
         case "pdf":
             return "pdf"
@@ -181,8 +239,10 @@ def parse_output_format(form: FormData, errors: dict[str, str]) -> OutputFormat 
 
 def _is_position_covered_by_survey(form: FormData, survey: str) -> bool:
     try:
-        right_ascension = parse.parse_right_ascension(form.get("right_ascension", ""))
-        declination = parse.parse_declination(form.get("declination", ""))
+        right_ascension = parse.parse_right_ascension(
+            cast(str, form.get("right_ascension", ""))
+        )
+        declination = parse.parse_declination(cast(str, form.get("declination", "")))
     except ValueError:
         return True
     return is_covering_position(survey, SkyCoord(ra=right_ascension, dec=declination))

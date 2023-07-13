@@ -4,8 +4,7 @@ import matplotlib as mpl
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from fcg.views import index, finder_charts
-
+from fcg.views import finder_charts, index
 
 # The default macOS backend for Matplotlib leads to crashes, hence we specifically
 # choose the pdf one

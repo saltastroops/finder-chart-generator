@@ -7,7 +7,7 @@ COPY poetry.lock .
 
 RUN curl -sSL https://install.python-poetry.org | python3 -
 
-RUN ~/.local/bin/poetry export -f requirements.txt --output requirements.txt
+RUN ~/.local/bin/poetry export -f requirements.txt --without-hashes --output requirements.txt
 
 # ---
 

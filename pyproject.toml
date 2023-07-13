@@ -17,19 +17,26 @@ imephu = "^0.2.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.3.1"
-flake8 = "^6.0.0"
 black = {extras = ["d"], version = "^23.3.0"}
-isort = "^5.12.0"
-flake8-bugbear = "^23.3.23"
-flake8-print = "^5.0.0"
 mypy = "^1.2.0"
 httpx = "^0.24.0"
 pytest-regressions = "^2.4.2"
 pillow = "^9.5.0"
+ruff = "^0.0.269"
+types-pillow = "^9.5.0.4"
+bandit = "^1.7.5"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
 
-[tool.isort]
-profile = "black"
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "B", "I"]
+unfixable = ["B"]
+ignore = ["E203", "E501"]
+dummy-variable-rgx = "^ignore_me$"
+target-version = "py310"
+
+[tool.ruff.pydocstyle]
+convention = "numpy"
