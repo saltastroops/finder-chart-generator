@@ -11,6 +11,7 @@ from fcg.infrastructure.parse import (
     parse_position_angle,
     parse_right_ascension,
     parse_slit_width,
+    parse_float,
 )
 
 
@@ -60,6 +61,18 @@ def test_parse_form_field_returns_invalid_value() -> None:
     )
     assert errors == {"a": invalid_message}
     assert parsed_value is None
+
+
+@pytest.mark.parametrize("text, expected", [("2.56", 2.56), ("0", 0), ("-17.8", -17.8)])
+def test_parse_float(text: str, expected: float) -> None:
+    float_value = parse_float(text)
+    assert float_value == pytest.approx(expected)
+
+
+@pytest.mark.parametrize("text", ["", "invalid"])
+def test_parse_invalid_declination(text: str) -> None:
+    with pytest.raises(ValueError, match="float"):
+        parse_float(text)
 
 
 @pytest.mark.parametrize(

@@ -5,7 +5,7 @@ from imephu.service.survey import is_covering_position
 from starlette.datastructures import FormData, UploadFile
 
 from fcg.infrastructure import parse
-from fcg.infrastructure.types import OutputFormat
+from fcg.infrastructure.types import OutputFormat, MagnitudeRange
 
 
 def parse_proposal_code(form: FormData, errors: dict[str, str]) -> str | None:
@@ -39,6 +39,61 @@ def parse_target(form: FormData, errors: dict[str, str]) -> str | None:
         error_id="target",
         errors=errors,
     )
+
+
+def parse_magnitude_range(
+    form: FormData, errors: dict[str, str]
+) -> MagnitudeRange | None:
+    min_magnitude_value = form.get("min_magnitude")
+    max_magnitude_value = form.get("max_magnitude")
+    bandpass_value = form.get("bandpass")
+    non_none_count = (
+        (1 if min_magnitude_value is not None else 0)
+        + (1 if max_magnitude_value is not None else 0)
+        + (1 if bandpass_value is not None else 0)
+    )
+    if non_none_count == 0:
+        return None
+    elif non_none_count == 3:
+        min_magnitude = parse.parse_generic_form_field(
+            form=form,
+            field="min_magnitude",
+            parse_func=parse.parse_float,
+            missing_message="The minimum magnitude is missing.",
+            error_id="magnitude_range",
+            errors=errors,
+        )
+        max_magnitude = parse.parse_generic_form_field(
+            form=form,
+            field="max_magnitude",
+            parse_func=parse.parse_float,
+            missing_message="The maximum magnitude is missing.",
+            error_id="magnitude_range",
+            errors=errors,
+        )
+        bandpass = parse.parse_generic_form_field(
+            form=form,
+            field="bandpass",
+            parse_func=lambda s: s,
+            missing_message="The bandpass is missing.",
+            error_id="magnitude_range",
+            errors=errors,
+        )
+        if max_magnitude < min_magnitude:
+            errors["magnitude_range"] = (
+                "The minimum magnitude must not be greater "
+                "than the maximum magnitude."
+            )
+            return None
+
+        return MagnitudeRange(
+            min_magnitude=min_magnitude, max_magnitude=max_magnitude, bandpass=bandpass
+        )
+    else:
+        errors[
+            "magnitude_range"
+        ] = "A minimum magnitude, maximum magnitude and bandpass must be specified for a magnitude range."
+        return None
 
 
 def parse_right_ascension(form: FormData, errors: dict[str, str]) -> Angle | None:

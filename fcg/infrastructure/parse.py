@@ -26,6 +26,16 @@ def parse_generic_form_field(
         return None
 
 
+def parse_float(text: str) -> float:
+    """
+    Parse a float value.
+    """
+    error = f"Not a float value: {text}"
+    if not is_float(text):
+        raise ValueError(error)
+    return float(text)
+
+
 def parse_right_ascension(text: str) -> Angle:
     """
     Parse a right ascension value.
