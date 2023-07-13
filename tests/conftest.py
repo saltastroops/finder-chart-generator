@@ -41,12 +41,17 @@ def check_image(file_regression: FileRegressionFixture) -> Callable[[bytes], Non
         img1 = Image.open(actual)
         img2 = Image.open(expected)
 
+        message = (
+            "The image has changed. Use the --force-regen option to update the " "file"
+        )
+        if img1.size != img2.size:
+            raise AssertionError(message)
         sum_sq_diff = np.sum(
             (np.asarray(img1).astype("float") - np.asarray(img2).astype("float")) ** 2
         )
 
         if sum_sq_diff > 0:
-            raise AssertionError("The image has changed.")
+            raise AssertionError(message)
 
     def _check_image(image_contents: bytes) -> None:
         # Matplotlib adds a string with version information to the PNG. As this

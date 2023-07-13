@@ -3,6 +3,7 @@ from typing import cast
 import pytest
 from starlette.datastructures import FormData
 
+from fcg.infrastructure.types import MagnitudeRange
 from fcg.viewmodels.parse import parse_magnitude_range
 
 
@@ -29,7 +30,7 @@ def test_parse_invalid_magnitude_range(
             "bandpass": bandpass_text,
         },
     )
-    errors = dict()
+    errors: dict[str, str] = dict()
     magnitude_range = parse_magnitude_range(form, errors)
     assert magnitude_range is None
     assert error in errors["magnitude_range"]
@@ -39,7 +40,9 @@ def test_parse_invalid_magnitude_range(
     "min_magnitude, max_magnitude, bandpass",
     [(-4, -4, "V"), (-6.78, 1.8, "B"), (17.94, 17.94, "SRE-1")],
 )
-def test_parse_magnitude_range(min_magnitude, max_magnitude, bandpass) -> None:
+def test_parse_magnitude_range(
+    min_magnitude: float, max_magnitude: float, bandpass: str
+) -> None:
     form = cast(
         FormData,
         {
@@ -48,8 +51,8 @@ def test_parse_magnitude_range(min_magnitude, max_magnitude, bandpass) -> None:
             "bandpass": bandpass,
         },
     )
-    errors = dict()
-    magnitude_range = parse_magnitude_range(form, errors)
+    errors: dict[str, str] = dict()
+    magnitude_range = cast(MagnitudeRange, parse_magnitude_range(form, errors))
     assert pytest.approx(magnitude_range.min_magnitude) == min_magnitude
     assert pytest.approx(magnitude_range.max_magnitude) == max_magnitude
     assert magnitude_range.bandpass == bandpass

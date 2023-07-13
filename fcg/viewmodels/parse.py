@@ -79,6 +79,9 @@ def parse_magnitude_range(
             error_id="magnitude_range",
             errors=errors,
         )
+        if min_magnitude is None or max_magnitude is None or bandpass is None:
+            return None
+
         if max_magnitude < min_magnitude:
             errors["magnitude_range"] = (
                 "The minimum magnitude must not be greater "
