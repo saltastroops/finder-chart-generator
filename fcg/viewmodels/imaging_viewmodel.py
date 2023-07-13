@@ -2,9 +2,9 @@ from astropy.coordinates import Angle
 from fastapi import Request
 from starlette.datastructures import UploadFile
 
+from fcg.infrastructure.types import OutputFormat
 from fcg.viewmodels import parse
 from fcg.viewmodels.form_base_viewmodel import FormBaseViewModel
-from fcg.infrastructure.types import OutputFormat
 
 
 class ImagingViewModel(FormBaseViewModel):

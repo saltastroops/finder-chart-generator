@@ -6,12 +6,12 @@ from starlette.datastructures import FormData
 from fcg.infrastructure.parse import (
     is_float,
     parse_declination,
+    parse_float,
     parse_generic_form_field,
     parse_nir_bundle_separation,
     parse_position_angle,
     parse_right_ascension,
     parse_slit_width,
-    parse_float,
 )
 
 
@@ -70,7 +70,7 @@ def test_parse_float(text: str, expected: float) -> None:
 
 
 @pytest.mark.parametrize("text", ["", "invalid"])
-def test_parse_invalid_declination(text: str) -> None:
+def test_parse_invalid_float(text: str) -> None:
     with pytest.raises(ValueError, match="float"):
         parse_float(text)
 

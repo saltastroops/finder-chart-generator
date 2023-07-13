@@ -5,7 +5,7 @@ from imephu.service.survey import is_covering_position
 from starlette.datastructures import FormData, UploadFile
 
 from fcg.infrastructure import parse
-from fcg.infrastructure.types import OutputFormat, MagnitudeRange
+from fcg.infrastructure.types import MagnitudeRange, OutputFormat
 
 
 def parse_proposal_code(form: FormData, errors: dict[str, str]) -> str | None:
