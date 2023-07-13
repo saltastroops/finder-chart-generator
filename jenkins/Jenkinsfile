@@ -45,7 +45,7 @@ pipeline {
                   'dockerFile': 'Dockerfile',
                   'host': 'ssdadev.cape.saao.ac.za',
                   'hostCredentialsId': 'saltapi_dev_host',
-                  'imageName': 'saltapi',
+                  'imageName': 'finder-chart-generator',
                   'registryCredentialsId': 'saltapi_registry',
                   'registryUrl': 'http://ukulinga.com'
           )
