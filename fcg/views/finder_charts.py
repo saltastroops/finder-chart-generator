@@ -60,6 +60,9 @@ async def generate_finder_chart(request: Request, mode: str) -> Response:
                 )
     except Exception as e:
         logging.log(logging.ERROR, str(e))
+        import traceback
+
+        traceback.print_exc()
         return JSONResponse(
             {"errors": {"__general": str(e)}},
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -141,7 +144,7 @@ async def _longslit(request: Request) -> Response:
         SkyCoord(
             ra=vm.reference_star_right_ascension, dec=vm.reference_star_declination
         )
-        if vm.reference_star_right_ascension
+        if vm.reference_star_right_ascension is not None
         else None
     )
     finder_chart = rss_longslit_finder_chart(
@@ -205,7 +208,7 @@ async def _nir(request: Request) -> Response:
         SkyCoord(
             ra=vm.reference_star_right_ascension, dec=vm.reference_star_declination
         )
-        if vm.reference_star_right_ascension
+        if vm.reference_star_right_ascension is not None
         else None
     )
     finder_chart = nir_finder_chart(

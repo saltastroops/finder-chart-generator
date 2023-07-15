@@ -12,8 +12,8 @@ class LongslitViewModel(FormBaseViewModel):
         super().__init__(request)
         self.right_ascension: Angle = Angle("0deg")
         self.declination: Angle = Angle("0deg")
-        self.reference_star_right_ascension: Angle = Angle("0deg")
-        self.reference_star_declination: Angle = Angle("0deg")
+        self.reference_star_right_ascension: Angle | None = None
+        self.reference_star_declination: Angle | None = None
         self.slit_width: Angle = Angle("0deg")
         self.background_image: str | UploadFile = ""
         self.output_format: OutputFormat = "pdf"
@@ -25,33 +25,29 @@ class LongslitViewModel(FormBaseViewModel):
         super().load_common_data(form)
 
         # right ascension
-        self.right_ascension = parse.parse_right_ascension(form, self.errors) or Angle(
-            "0deg"
-        )
+        self.right_ascension = parse.parse_right_ascension(form, self.errors)
 
         # declination
-        self.declination = parse.parse_declination(form, self.errors) or Angle("0deg")
+        self.declination = parse.parse_declination(form, self.errors)
 
         # reference star right ascension
         self.reference_star_right_ascension = (
             parse.parse_reference_star_right_ascension(form, self.errors)
-        ) or Angle("0deg")
+        )
 
         # reference star declination
         self.reference_star_declination = parse.parse_reference_star_declination(
             form, self.errors
-        ) or Angle("0deg")
-
-        # position angle
-        self.position_angle = parse.parse_position_angle(form, self.errors) or Angle(
-            "0deg"
         )
 
+        # position angle
+        self.position_angle = parse.parse_position_angle(form, self.errors)
+
         # slit width
-        self.slit_width = parse.parse_slit_width(form, self.errors) or Angle("0deg")
+        self.slit_width = parse.parse_slit_width(form, self.errors)
 
         # background image
-        self.background_image = parse.parse_background_image(form, self.errors) or ""
+        self.background_image = parse.parse_background_image(form, self.errors)
 
         # output format
-        self.output_format = parse.parse_output_format(form, self.errors) or "pdf"
+        self.output_format = parse.parse_output_format(form, self.errors)
