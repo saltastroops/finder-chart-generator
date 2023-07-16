@@ -29,16 +29,16 @@ def _valid_input(mode: str) -> Tuple[dict[str, str], dict[str, BinaryIO]]:
         case "imaging":
             pass
         case "longslit":
-            data["reference_star_right_ascension"] = "180d 1m"
-            data["reference_star_declination"] = "-45d 2m"
+            data["reference_star_right_ascension"] = "170.1"
+            data["reference_star_declination"] = "-55.5"
             data["slit_width"] = "4"
         case "mos":
             del data["right_ascension"]
             del data["declination"]
             files["mos_mask_file"] = open("tests/data/mos_mask.xml", "rb")
         case "nir":
-            data["reference_star_right_ascension"] = "180d 1m"
-            data["reference_star_declination"] = "-45d 2m"
+            data["reference_star_right_ascension"] = "170.1"
+            data["reference_star_declination"] = "-55.5"
             data["nir_bundle_separation"] = "100"
         case "slotmode":
             pass
