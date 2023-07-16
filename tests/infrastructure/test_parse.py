@@ -63,7 +63,7 @@ def test_parse_form_field_returns_invalid_value() -> None:
         errors=errors,
     )
     assert errors == {"a": invalid_message}
-    assert parsed_value is "invalid"
+    assert parsed_value == "invalid"
 
 
 @pytest.mark.parametrize("text, expected", [("2.56", 2.56), ("0", 0), ("-17.8", -17.8)])
