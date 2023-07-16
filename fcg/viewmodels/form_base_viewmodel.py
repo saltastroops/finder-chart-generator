@@ -14,12 +14,12 @@ class FormBaseViewModel(BaseViewModel):
 
     def load_common_data(self, form: FormData) -> None:
         # proposal code
-        self.proposal_code = parse.parse_proposal_code(form, self.errors) or ""
+        self.proposal_code = parse.parse_proposal_code(form, self.errors)
 
         # Principal Investigator
-        self.principal_investigator = (
-            parse.parse_principal_investigator(form, self.errors) or ""
+        self.principal_investigator = parse.parse_principal_investigator(
+            form, self.errors
         )
 
         # target
-        self.target = parse.parse_target(form, self.errors) or ""
+        self.target = parse.parse_target(form, self.errors)

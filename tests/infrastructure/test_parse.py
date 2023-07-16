@@ -20,6 +20,7 @@ def test_parse_form_field_returns_value_from_parse_func() -> None:
         form=cast(FormData, {"a": "3"}),  # noqa
         field="a",
         parse_func=lambda s: 2 * int(s),
+        default=0,
         missing_message="The value is missing.",
         error_id="a",
         errors=dict(),
@@ -35,12 +36,13 @@ def test_parse_form_field_handles_missing_value(form: dict[str, str]) -> None:
         form=cast(FormData, form),
         field="a",
         parse_func=lambda s: 2 * int(s),
+        default=-42,
         missing_message=missing_message,
         error_id="a",
         errors=errors,
     )
     assert errors == {"a": missing_message}
-    assert parsed_value is None
+    assert parsed_value == -42
 
 
 def test_parse_form_field_returns_invalid_value() -> None:
@@ -55,12 +57,13 @@ def test_parse_form_field_returns_invalid_value() -> None:
         form=cast(FormData, form),
         field="a",
         parse_func=f,
+        default="invalid",
         missing_message=missing_message,
         error_id="a",
         errors=errors,
     )
     assert errors == {"a": invalid_message}
-    assert parsed_value is None
+    assert parsed_value == "invalid"
 
 
 @pytest.mark.parametrize("text, expected", [("2.56", 2.56), ("0", 0), ("-17.8", -17.8)])

@@ -27,7 +27,7 @@ class MosViewModel(FormBaseViewModel):
         )
 
         # background image
-        self.background_image = parse.parse_background_image(form, self.errors) or ""
+        self.background_image = parse.parse_background_image(form, self.errors)
 
         # output format
-        self.output_format = parse.parse_output_format(form, self.errors) or "pdf"
+        self.output_format = parse.parse_output_format(form, self.errors)

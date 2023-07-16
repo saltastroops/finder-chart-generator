@@ -60,6 +60,9 @@ async def generate_finder_chart(request: Request, mode: str) -> Response:
                 )
     except Exception as e:
         logging.log(logging.ERROR, str(e))
+        import traceback
+
+        traceback.print_exc()
         return JSONResponse(
             {"errors": {"__general": str(e)}},
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -137,9 +140,17 @@ async def _longslit(request: Request) -> Response:
         position_angle=vm.position_angle,
         survey=survey,
     )
+    reference_star = (
+        SkyCoord(
+            ra=vm.reference_star_right_ascension, dec=vm.reference_star_declination
+        )
+        if vm.reference_star_right_ascension is not None
+        else None
+    )
     finder_chart = rss_longslit_finder_chart(
         fits=fits,
         general=general_properties,
+        reference_star=reference_star,
         slit_width=vm.slit_width,
         slit_height=8 * u.arcmin,
     )
@@ -183,8 +194,19 @@ async def _nir(request: Request) -> Response:
             {"errors": vm.errors}, status_code=status.HTTP_400_BAD_REQUEST
         )
 
+    reference_star = (
+        SkyCoord(
+            ra=vm.reference_star_right_ascension, dec=vm.reference_star_declination
+        )
+        if vm.reference_star_right_ascension is not None
+        else None
+    )
     position = SkyCoord(ra=vm.right_ascension, dec=vm.declination)
-    survey, fits = _fits_details(vm.background_image, position)
+    if reference_star:
+        fits_center = reference_star
+    else:
+        fits_center = position
+    survey, fits = _fits_details(vm.background_image, fits_center)
     general_properties = _general_properties(
         principal_investigator=vm.principal_investigator,
         proposal_code=vm.proposal_code,
@@ -193,13 +215,10 @@ async def _nir(request: Request) -> Response:
         position_angle=vm.position_angle,
         survey=survey,
     )
-    science_bundle_center = SkyCoord(
-        ra=vm.science_bundle_right_ascension, dec=vm.science_bundle_declination
-    )
     finder_chart = nir_finder_chart(
         fits=fits,
         general=general_properties,
-        science_bundle_center=science_bundle_center,
+        reference_star=reference_star,
         bundle_separation=vm.nir_bundle_separation,
     )
     return _finder_chart_stream(finder_chart, vm.output_format)
@@ -254,12 +273,12 @@ def _general_properties(
 
 
 def _fits_details(
-    background_image: str | UploadFile, position: SkyCoord
+    background_image: str | UploadFile, fits_center: SkyCoord
 ) -> Tuple[str, BinaryIO]:
     if type(background_image) == str:
         survey = background_image
         return survey, load_fits(
-            survey=survey, fits_center=position, size=10 * u.arcmin
+            survey=survey, fits_center=fits_center, size=10 * u.arcmin
         )
     elif hasattr(background_image, "file"):
         survey = ""

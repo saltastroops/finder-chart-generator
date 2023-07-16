@@ -11,19 +11,20 @@ def parse_generic_form_field(
     form: FormData,
     field: str,
     parse_func: Callable[[str], T],
+    default: T,
     missing_message: str,
     error_id: str,
     errors: dict[str, str],
-) -> T | None:
+) -> T:
     field_value = cast(str, form.get(field, "")).strip()
     if not field_value:
         errors[error_id] = missing_message
-        return None
+        return default
     try:
         return parse_func(field_value)
     except ValueError as e:
         errors[error_id] = str(e)
-        return None
+        return default
 
 
 def parse_float(text: str) -> float:

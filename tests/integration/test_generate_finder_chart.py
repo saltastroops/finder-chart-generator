@@ -1,5 +1,5 @@
-from io import BufferedReader, BytesIO
-from typing import Callable, Tuple
+from io import BytesIO
+from typing import BinaryIO, Callable, Tuple, cast
 
 import numpy as np
 import pytest
@@ -12,7 +12,7 @@ _CheckImage = Callable[[bytes], None]
 _URL = "/finder-charts"
 
 
-def _valid_input(mode: str) -> Tuple[dict[str, str], dict[str, BufferedReader]]:
+def _valid_input(mode: str) -> Tuple[dict[str, str], dict[str, BinaryIO]]:
     data = {
         "proposal_code": "2023-1-SCI-042",
         "principal_investigator": "Adams",
@@ -29,21 +29,23 @@ def _valid_input(mode: str) -> Tuple[dict[str, str], dict[str, BufferedReader]]:
         case "imaging":
             pass
         case "longslit":
+            data["reference_star_right_ascension"] = "170.1"
+            data["reference_star_declination"] = "-55.5"
             data["slit_width"] = "4"
         case "mos":
             del data["right_ascension"]
             del data["declination"]
             files["mos_mask_file"] = open("tests/data/mos_mask.xml", "rb")
         case "nir":
-            data["science_bundle_right_ascension"] = "180d 1m"
-            data["science_bundle_declination"] = "-45d 2m"
+            data["reference_star_right_ascension"] = "170.1"
+            data["reference_star_declination"] = "-55.5"
             data["nir_bundle_separation"] = "100"
         case "slotmode":
             pass
         case _:
             raise ValueError(f"Unsupported mode: {mode}")
 
-    return data, files
+    return data, cast(dict[str, BinaryIO], files)
 
 
 @pytest.mark.parametrize("mode", ["", "invalid"])
@@ -135,8 +137,65 @@ def test_generate_for_longslit_with_missing_values(client: TestClient) -> None:
         assert missing_info in errors[field]
 
 
+@pytest.mark.parametrize(
+    "missing_field, error_contents",
+    [
+        ("reference_star_right_ascension", ["reference star", "right ascension"]),
+        ("reference_star_declination", ["reference star", "declination"]),
+    ],
+)
+def test_generate_for_longslit_with_incomplete_reference_star(
+    missing_field: str, error_contents: list[str], client: TestClient
+) -> None:
+    data, files = _valid_input("longslit")
+    del data[missing_field]
+
+    response = client.post(_URL, params={"mode": "longslit"}, data=data, files=files)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    errors = response.json()["errors"]
+    for error_content in error_contents:
+        assert error_content in errors[missing_field]
+
+
+@pytest.mark.parametrize("value", ["invalid", "-0.1", "360.1"])
+def test_longslit_with_invalid_reference_star_right_ascension(
+    value: str, client: TestClient
+) -> None:
+    response = client.post(
+        _URL,
+        params={"mode": "longslit"},
+        data={"reference_star_right_ascension": value},
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    errors = response.json()["errors"]
+    assert "360" in errors["reference_star_right_ascension"]
+
+
+@pytest.mark.parametrize("value", ["invalid", "-90.1", "90.1"])
+def test_longslit_with_invalid_reference_star_declination(
+    value: str, client: TestClient
+) -> None:
+    response = client.post(
+        _URL, params={"mode": "longslit"}, data={"reference_star_declination": value}
+    )
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    errors = response.json()["errors"]
+    assert "90" in errors["reference_star_declination"]
+
+
 def test_generate_for_longslit(client: TestClient, check_image: _CheckImage) -> None:
     data, files = _valid_input("longslit")
+    response = client.post(_URL, params={"mode": "longslit"}, data=data, files=files)
+    assert response.status_code == status.HTTP_200_OK
+    check_image(response.content)
+
+
+def test_generate_for_longslit_without_reference_star(
+    client: TestClient, check_image: _CheckImage
+) -> None:
+    data, files = _valid_input("longslit")
+    del data["reference_star_right_ascension"]
+    del data["reference_star_declination"]
     response = client.post(_URL, params={"mode": "longslit"}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
     check_image(response.content)
@@ -172,8 +231,6 @@ def test_generate_for_nir_with_missing_values(client: TestClient) -> None:
         ("target", "target"),
         ("right_ascension", "right ascension"),
         ("declination", "declination"),
-        ("science_bundle_right_ascension", "right ascension of the science bundle"),
-        ("science_bundle_declination", "declination of the science bundle"),
         ("nir_bundle_separation", "bundle separation"),
         ("position_angle", "position angle"),
     ]
@@ -186,8 +243,39 @@ def test_generate_for_nir_with_missing_values(client: TestClient) -> None:
         assert missing_info in errors[field]
 
 
+@pytest.mark.parametrize(
+    "missing_field, error_contents",
+    [
+        ("reference_star_right_ascension", ["reference star", "right ascension"]),
+        ("reference_star_declination", ["reference star", "declination"]),
+    ],
+)
+def test_generate_for_nir_with_incomplete_reference_star(
+    missing_field: str, error_contents: list[str], client: TestClient
+) -> None:
+    data, files = _valid_input("nir")
+    del data[missing_field]
+
+    response = client.post(_URL, params={"mode": "nir"}, data=data, files=files)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    errors = response.json()["errors"]
+    for error_content in error_contents:
+        assert error_content in errors[missing_field]
+
+
 def test_generate_for_nir(client: TestClient, check_image: _CheckImage) -> None:
     data, files = _valid_input("nir")
+    response = client.post(_URL, params={"mode": "nir"}, data=data, files=files)
+    assert response.status_code == status.HTTP_200_OK
+    check_image(response.content)
+
+
+def test_generate_for_nir_without_reference_star(
+    client: TestClient, check_image: _CheckImage
+) -> None:
+    data, files = _valid_input("nir")
+    del data["reference_star_right_ascension"]
+    del data["reference_star_declination"]
     response = client.post(_URL, params={"mode": "nir"}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
     check_image(response.content)
@@ -256,23 +344,27 @@ def test_invalid_slit_width(value: str, client: TestClient) -> None:
 
 
 @pytest.mark.parametrize("value", ["invalid", "-0.1", "360.1"])
-def test_invalid_science_bundle_right_ascension(value: str, client: TestClient) -> None:
+def test_nir_with_invalid_reference_star_right_ascension(
+    value: str, client: TestClient
+) -> None:
     response = client.post(
-        _URL, params={"mode": "nir"}, data={"science_bundle_right_ascension": value}
+        _URL, params={"mode": "nir"}, data={"reference_star_right_ascension": value}
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
-    assert "360" in errors["science_bundle_right_ascension"]
+    assert "360" in errors["reference_star_right_ascension"]
 
 
 @pytest.mark.parametrize("value", ["invalid", "-90.1", "90.1"])
-def test_invalid_science_bundle_declination(value: str, client: TestClient) -> None:
+def test_nir_with_invalid_reference_star_declination(
+    value: str, client: TestClient
+) -> None:
     response = client.post(
-        _URL, params={"mode": "nir"}, data={"science_bundle_declination": value}
+        _URL, params={"mode": "nir"}, data={"reference_star_declination": value}
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
-    assert "90" in errors["science_bundle_declination"]
+    assert "90" in errors["reference_star_declination"]
 
 
 @pytest.mark.parametrize("value", ["invalid", "53.9", "165.1"])

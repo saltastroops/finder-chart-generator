@@ -23,20 +23,16 @@ class SlotmodeViewModel(FormBaseViewModel):
         super().load_common_data(form)
 
         # right ascension
-        self.right_ascension = parse.parse_right_ascension(form, self.errors) or Angle(
-            "0deg"
-        )
+        self.right_ascension = parse.parse_right_ascension(form, self.errors)
 
         # declination
-        self.declination = parse.parse_declination(form, self.errors) or Angle("0deg")
+        self.declination = parse.parse_declination(form, self.errors)
 
         # position angle
-        self.position_angle = parse.parse_position_angle(form, self.errors) or Angle(
-            "0deg"
-        )
+        self.position_angle = parse.parse_position_angle(form, self.errors)
 
         # background image
-        self.background_image = parse.parse_background_image(form, self.errors) or ""
+        self.background_image = parse.parse_background_image(form, self.errors)
 
         # output format
-        self.output_format = parse.parse_output_format(form, self.errors) or "pdf"
+        self.output_format = parse.parse_output_format(form, self.errors)
