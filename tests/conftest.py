@@ -11,7 +11,7 @@ from starlette.testclient import TestClient
 from fcg.main import app
 
 
-@pytest.fixture(scope="session", autouse=True)
+@pytest.fixture(scope="function", autouse=True)
 def seed_random_number_generator() -> None:
     # We need to seed the random number generator as AstroPy uses random numbers, which
     # (without seeding) results in slightly different finder charts every time the tests
