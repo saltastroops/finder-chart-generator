@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from typing import cast
 
 import pytest
@@ -8,10 +9,12 @@ from fcg.infrastructure.parse import (
     parse_declination,
     parse_float,
     parse_generic_form_field,
+    parse_int,
     parse_nir_bundle_separation,
     parse_position_angle,
     parse_right_ascension,
     parse_slit_width,
+    parse_timestamp,
 )
 
 
@@ -66,6 +69,18 @@ def test_parse_form_field_returns_invalid_value() -> None:
     assert parsed_value == "invalid"
 
 
+@pytest.mark.parametrize("text, expected", [("2", 2), ("0", 0), ("-17", -17)])
+def test_parse_int(text: str, expected: int) -> None:
+    int_value = parse_int(text)
+    assert int_value == expected
+
+
+@pytest.mark.parametrize("text", ["", "invalid"])
+def test_parse_invalid_int(text: str) -> None:
+    with pytest.raises(ValueError, match="int"):
+        parse_int(text)
+
+
 @pytest.mark.parametrize("text, expected", [("2.56", 2.56), ("0", 0), ("-17.8", -17.8)])
 def test_parse_float(text: str, expected: float) -> None:
     float_value = parse_float(text)
@@ -76,6 +91,23 @@ def test_parse_float(text: str, expected: float) -> None:
 def test_parse_invalid_float(text: str) -> None:
     with pytest.raises(ValueError, match="float"):
         parse_float(text)
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("0", datetime(1970, 1, 1, 0, 0, 0, 0, tzinfo=timezone.utc)),
+        ("1689591685", datetime(2023, 7, 17, 11, 1, 25, tzinfo=timezone.utc)),
+    ],
+)
+def test_parse_timestamp(text: str, expected: datetime) -> None:
+    assert parse_timestamp(text) == expected
+
+
+@pytest.mark.parametrize("text", ["", "invalid"])
+def test_parse_invalid_timestamp(text: str) -> None:
+    with pytest.raises(ValueError, match="timestamp"):
+        parse_timestamp(text)
 
 
 @pytest.mark.parametrize(

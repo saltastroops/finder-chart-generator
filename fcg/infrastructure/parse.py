@@ -1,4 +1,5 @@
 import re
+from datetime import datetime, timezone
 from typing import Callable, TypeVar, cast
 
 from astropy.coordinates import Angle
@@ -27,6 +28,16 @@ def parse_generic_form_field(
         return default
 
 
+def parse_int(text: str) -> int:
+    """
+    Parse an int value.
+    """
+    error = f"Not an int value: {text}"
+    if not is_int(text):
+        raise ValueError(error)
+    return int(text)
+
+
 def parse_float(text: str) -> float:
     """
     Parse a float value.
@@ -35,6 +46,14 @@ def parse_float(text: str) -> float:
     if not is_float(text):
         raise ValueError(error)
     return float(text)
+
+
+def parse_timestamp(text: str) -> datetime:
+    try:
+        return datetime.fromtimestamp(float(text), timezone.utc)
+    except BaseException as e:
+        error = f"Not a valid timestamp: {text}"
+        raise ValueError(error) from e
 
 
 def parse_right_ascension(text: str) -> Angle:
@@ -125,6 +144,10 @@ def parse_nir_bundle_separation(text: str) -> Angle:
     if angle.arcsecond < 54 or angle.arcsecond > 165:
         raise ValueError(error)
     return angle
+
+
+def is_int(text: str) -> bool:
+    return re.match(r"^[+-]?\d+$", text) is not None
 
 
 def is_float(text: str) -> bool:
