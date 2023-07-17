@@ -4,7 +4,7 @@ import matplotlib as mpl
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from fcg.views import finder_charts, index
+from fcg.views import ephemerides, finder_charts, index
 
 # The default macOS backend for Matplotlib leads to crashes, hence we specifically
 # choose the pdf one
@@ -18,3 +18,4 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 
 app.include_router(index.router)
 app.include_router(finder_charts.router)
+app.include_router(ephemerides.router)

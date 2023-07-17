@@ -1,3 +1,4 @@
+from datetime import datetime, timezone
 from typing import cast
 
 from astropy.coordinates import Angle, SkyCoord
@@ -252,6 +253,54 @@ def parse_output_format(form: FormData, errors: dict[str, str]) -> OutputFormat:
         case _:
             errors["output_format"] = f"Unsupported output format: {output_format}"
             return "pdf"
+
+
+def parse_end_time(form: FormData, errors: dict[str, str]) -> datetime:
+    return parse.parse_generic_form_field(
+        form=form,
+        field="end",
+        parse_func=parse.parse_timestamp,
+        default=datetime.fromtimestamp(0, timezone.utc),
+        missing_message="The end time is missing.",
+        error_id="end",
+        errors=errors,
+    )
+
+
+def parse_horizons_identifier(form: FormData, errors: dict[str, str]) -> str:
+    return parse.parse_generic_form_field(
+        form=form,
+        field="identifier",
+        parse_func=lambda s: s,
+        default="",
+        missing_message="The Horizons identifier is missing.",
+        error_id="identifier",
+        errors=errors,
+    )
+
+
+def parse_output_interval(form: FormData, errors: dict[str, str]) -> int:
+    return parse.parse_generic_form_field(
+        form=form,
+        field="output_interval",
+        parse_func=parse.parse_int,
+        default=0,
+        missing_message="The output interval is missing.",
+        error_id="output_interval",
+        errors=errors,
+    )
+
+
+def parse_start_time(form: FormData, errors: dict[str, str]) -> datetime:
+    return parse.parse_generic_form_field(
+        form=form,
+        field="start",
+        parse_func=parse.parse_timestamp,
+        default=datetime.fromtimestamp(0, timezone.utc),
+        missing_message="The start time is missing.",
+        error_id="start",
+        errors=errors,
+    )
 
 
 def _is_position_covered_by_survey(form: FormData, survey: str) -> bool:
