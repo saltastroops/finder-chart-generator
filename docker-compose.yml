@@ -1,6 +1,7 @@
 services:
   fcg:
-    image: ukulinga.com/saltastroops/finder-chart-generator:${TAG}
+    build:
+      context: .
     ports:
       - 6789:8000
     restart: always
