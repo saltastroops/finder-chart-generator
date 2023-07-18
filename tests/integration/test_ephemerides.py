@@ -4,7 +4,7 @@ from unittest import mock
 import astropy.units as u
 import pytest
 from astropy.coordinates import SkyCoord
-from imephu.utils import Ephemeris, MagnitudeRange
+from imephu.utils import Ephemeris, MagnitudeRange, SkyCoordRate
 from starlette import status
 from starlette.testclient import TestClient
 
@@ -27,6 +27,9 @@ _mock_ephemerides = [
     Ephemeris(
         epoch=datetime(2023, 7, 17, 12, 0, 0, 0, tzinfo=timezone.utc),
         position=SkyCoord(ra=98.5 * u.deg, dec=-17.99 * u.deg),
+        position_rate=SkyCoordRate(
+            ra=1 * u.arcsec / u.hour, dec=-2.7 * u.arcsec / u.hour
+        ),
         magnitude_range=MagnitudeRange(
             bandpass="V", min_magnitude=16.4, max_magnitude=16.4
         ),
@@ -34,6 +37,9 @@ _mock_ephemerides = [
     Ephemeris(
         epoch=datetime(2023, 7, 18, 12, 0, 0, 0, tzinfo=timezone.utc),
         position=SkyCoord(ra=98.43 * u.deg, dec=-18.34 * u.deg),
+        position_rate=SkyCoordRate(
+            ra=1.3 * u.arcsec / u.hour, dec=-2.8 * u.arcsec / u.hour
+        ),
         magnitude_range=None,
     ),
 ]
@@ -87,7 +93,10 @@ def test_ephemerides(client: TestClient) -> None:
             ephemerides[0]["epoch"]
             == datetime(2023, 7, 17, 12, 0, 0, 0, tzinfo=timezone.utc).timestamp()
         )
-        assert ephemerides[0]["right_ascension"] == pytest.approx(98.5)
-        assert ephemerides[1]["declination"] == pytest.approx(-18.34)
+        assert ephemerides[0]["ra"] == pytest.approx(98.5)
+        assert ephemerides[1]["dec"] == pytest.approx(-18.34)
+        assert ephemerides[1]["dec"] == pytest.approx(-18.34)
+        assert ephemerides[0]["ra_rate"] == pytest.approx(1)
+        assert ephemerides[1]["dec_rate"] == pytest.approx(-2.8)
         assert ephemerides[0]["magnitude"] == 16.4
         assert ephemerides[1]["magnitude"] is None
