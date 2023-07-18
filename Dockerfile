@@ -24,6 +24,10 @@ COPY fcg ./fcg
 COPY static static
 COPY templates templates
 
+# Allow Matplotlib and AstroPy to store files
+RUN mkdir -p /var/www
+RUN chown -R www-data:www-data /var/www
+
 USER www-data
 
 CMD uvicorn fcg.main:app --port 8000 --host 0.0.0.0
