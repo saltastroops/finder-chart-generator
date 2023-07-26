@@ -1,3 +1,5 @@
+from typing import cast
+
 from astropy.coordinates import Angle
 from fastapi import Request
 from starlette.datastructures import UploadFile
@@ -32,14 +34,16 @@ class NirViewModel(FormBaseViewModel):
         self.declination = parse.parse_declination(form, self.errors)
 
         # reference star right ascension
-        self.reference_star_right_ascension = (
-            parse.parse_reference_star_right_ascension(form, self.errors)
-        )
+        if cast(str, form.get("reference_star_right_ascension", "")).strip():
+            self.reference_star_right_ascension = (
+                parse.parse_reference_star_right_ascension(form, self.errors)
+            )
 
         # reference star declination
-        self.reference_star_declination = parse.parse_reference_star_declination(
-            form, self.errors
-        )
+        if cast(str, form.get("reference_star_declination", "")).strip():
+            self.reference_star_declination = parse.parse_reference_star_declination(
+                form, self.errors
+            )
 
         # bundle separation
         self.nir_bundle_separation = parse.parse_nir_bundle_separation(
@@ -54,3 +58,19 @@ class NirViewModel(FormBaseViewModel):
 
         # output format
         self.output_format = parse.parse_output_format(form, self.errors)
+
+        # error checking
+        if (
+            self.reference_star_right_ascension is not None
+            and self.reference_star_declination is None
+        ):
+            self.errors[
+                "reference_star_declination"
+            ] = "A reference star right ascension requires a declination as well."
+        if (
+            self.reference_star_declination is not None
+            and self.reference_star_right_ascension is None
+        ):
+            self.errors[
+                "reference_star_right_ascension"
+            ] = "A reference star declination requires a right ascension as well."
