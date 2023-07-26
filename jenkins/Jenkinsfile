@@ -47,7 +47,7 @@ pipeline {
                   'hostCredentialsId': 'finder_chart_generator_host',
                   'imageName': 'finder-chart-generator',
                   'registryCredentialsId': 'finder_chart_generator_registry',
-                  'registryUrl': 'http://ukulinga.com'
+                  'registryUrl': 'https://registry.salt.ac.za'
           )
         }
       }
