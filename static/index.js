@@ -92,6 +92,11 @@ function selectFitsOption(optionElementId) {
   optionElementContainer.appendChild(fitsFileOptionElements[optionElementId])
 }
 
+function togglePositionAngleInput(event) {
+  const positionAngleInput = document.querySelector("#position_angle");
+  positionAngleInput.disabled = event.target.checked;
+}
+
 async function generateFinderChart(event) {
   event.preventDefault();
 
@@ -202,6 +207,9 @@ function addErrors() {
 function init() {
   // Add an event listener to the tabs for tab-switching
   tabs.forEach(tab => tab.addEventListener("click", switchTab));
+
+  // Add an event listener for disabling the position angle input field
+  document.querySelector("#calculate_position_angle").addEventListener("click", togglePositionAngleInput);
 
   // Add an event listener for displaying the filename. As the custom FITS file upload
   // button is created dynamically, we have to resort to event bubbling (see, for

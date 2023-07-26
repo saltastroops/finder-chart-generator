@@ -29,16 +29,16 @@ def _valid_input(mode: str) -> Tuple[dict[str, str], dict[str, BinaryIO]]:
         case "imaging":
             pass
         case "longslit":
-            data["reference_star_right_ascension"] = "170.1"
-            data["reference_star_declination"] = "-55.5"
+            data["reference_star_right_ascension"] = "170.129425288"
+            data["reference_star_declination"] = "-55.48333333333"
             data["slit_width"] = "4"
         case "mos":
             del data["right_ascension"]
             del data["declination"]
             files["mos_mask_file"] = open("tests/data/mos_mask.xml", "rb")
         case "nir":
-            data["reference_star_right_ascension"] = "170.1"
-            data["reference_star_declination"] = "-55.5"
+            data["reference_star_right_ascension"] = "170.129425288"
+            data["reference_star_declination"] = "-55.48333333333"
             data["nir_bundle_separation"] = "100"
         case "slotmode":
             pass
@@ -183,8 +183,34 @@ def test_longslit_with_invalid_reference_star_declination(
     assert "90" in errors["reference_star_declination"]
 
 
-def test_generate_for_longslit(client: TestClient, check_image: _CheckImage) -> None:
+def test_generate_for_longslit_with_calculate_and_position_angle(
+    client: TestClient,
+) -> None:
     data, files = _valid_input("longslit")
+
+    data["calculate_position_angle"] = "calculate"
+
+    response = client.post(_URL, params={"mode": "longslit"}, data=data, files=files)
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    errors = response.json()["errors"]
+    assert "calculated" in errors["position_angle"]
+
+
+def test_generate_for_longslit_with_given_position_angle(
+    client: TestClient, check_image: _CheckImage
+) -> None:
+    data, files = _valid_input("longslit")
+    response = client.post(_URL, params={"mode": "longslit"}, data=data, files=files)
+    assert response.status_code == status.HTTP_200_OK
+    check_image(response.content)
+
+
+def test_generate_for_longslit_with_calculated_position_angle(
+    client: TestClient, check_image: _CheckImage
+) -> None:
+    data, files = _valid_input("longslit")
+    data["calculate_position_angle"] = "calculate"
+    del data["position_angle"]
     response = client.post(_URL, params={"mode": "longslit"}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
     check_image(response.content)
@@ -265,6 +291,11 @@ def test_generate_for_nir_with_incomplete_reference_star(
 
 def test_generate_for_nir(client: TestClient, check_image: _CheckImage) -> None:
     data, files = _valid_input("nir")
+    # The finder chart should be centered on the reference star
+    data["reference_star_right_ascension"] = data["right_ascension"]
+    data["reference_star_declination"] = data["declination"]
+    data["right_ascension"] = "170.129425288"
+    data["declination"] = "-55.48333333333"
     response = client.post(_URL, params={"mode": "nir"}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
     check_image(response.content)

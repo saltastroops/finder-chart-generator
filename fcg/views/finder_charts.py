@@ -6,6 +6,7 @@ from typing import BinaryIO, Tuple, cast
 
 from astropy import units as u
 from astropy.coordinates import Angle, SkyCoord
+from astropy.coordinates import position_angle as position_angle_
 from fastapi import APIRouter, Request, Response
 from fastapi.responses import JSONResponse
 from imephu.finder_chart import FinderChart
@@ -130,6 +131,23 @@ async def _longslit(request: Request) -> Response:
             {"errors": vm.errors}, status_code=status.HTTP_400_BAD_REQUEST
         )
 
+    # Get the position angle
+    if (
+        vm.calculate_position_angle
+        and vm.reference_star_right_ascension is not None
+        and vm.reference_star_declination is not None
+    ):
+        position_angle = position_angle_(
+            vm.reference_star_right_ascension,
+            vm.reference_star_declination,
+            vm.right_ascension,
+            vm.declination,
+        )
+        automated_position_angle = True
+    else:
+        position_angle = vm.position_angle
+        automated_position_angle = False
+
     position = SkyCoord(ra=vm.right_ascension, dec=vm.declination)
     survey, fits = _fits_details(vm.background_image, position)
     general_properties = _general_properties(
@@ -137,7 +155,8 @@ async def _longslit(request: Request) -> Response:
         proposal_code=vm.proposal_code,
         target=vm.target,
         position=position,
-        position_angle=vm.position_angle,
+        position_angle=position_angle,
+        automated_position_angle=automated_position_angle,
         survey=survey,
     )
     reference_star = (
@@ -256,6 +275,7 @@ def _general_properties(
     target: str,
     position: SkyCoord,
     position_angle: Angle,
+    automated_position_angle: bool = False,
     survey: str = "",
 ) -> GeneralProperties:
     return GeneralProperties(
@@ -265,7 +285,7 @@ def _general_properties(
             magnitude_range=None,
         ),
         position_angle=position_angle,
-        automated_position_angle=False,
+        automated_position_angle=automated_position_angle,
         proposal_code=proposal_code,
         pi_family_name=principal_investigator,
         survey=survey,
