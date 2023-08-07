@@ -43,7 +43,7 @@ pipeline {
           saao.deployContainer(
                   'dockerComposeFile': 'docker-compose.yml',
                   'dockerFile': 'Dockerfile',
-                  'host': 'ssdadev.cape.saao.ac.za',
+                  'host': 'fc.salt.ac.za',
                   'hostCredentialsId': 'finder_chart_generator_host',
                   'imageName': 'finder-chart-generator',
                   'registryCredentialsId': 'finder_chart_generator_registry',
