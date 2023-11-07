@@ -997,13 +997,13 @@ files = [
 
 [[package]]
 name = "imephu"
-version = "0.10.0"
+version = "0.10.1"
 description = "Generate finder charts for astronomical observations."
 optional = false
 python-versions = ">=3.8,<4.0"
 files = [
-    {file = "imephu-0.10.0-py3-none-any.whl", hash = "sha256:ad9874a967d4d2d63ff9b32e93ff536d975a92ee087414f9b9be805d09e372c5"},
-    {file = "imephu-0.10.0.tar.gz", hash = "sha256:a728779eee25eb4c5265c49e5879855a8f5a1973f396e04f2a4efe689b8f4783"},
+    {file = "imephu-0.10.1-py3-none-any.whl", hash = "sha256:7e4cc8dcc26e10d16326cb7accb24c77c9f4fa5691373298a59f5a863d51c9f6"},
+    {file = "imephu-0.10.1.tar.gz", hash = "sha256:59938bab5516b7fe783c694a279c019896b074cca966d971872061f32a0cefd5"},
 ]
 
 [package.dependencies]
@@ -1012,7 +1012,7 @@ astroquery = ">=0.4.5"
 defusedxml = ">=0.7.1"
 jsonschema = ">=4.4.0"
 matplotlib = ">=3.1,<3.4.0 || >3.4.0"
-pypdf2 = ">=3.0.1,<4.0.0"
+pypdf = ">=3.17.0,<4.0.0"
 python-dateutil = ">=2.8.2"
 pyyaml = ">=6.0"
 requests = ">=2.27.1"
@@ -1976,22 +1976,22 @@ files = [
 diagrams = ["jinja2", "railroad-diagrams"]
 
 [[package]]
-name = "pypdf2"
-version = "3.0.1"
+name = "pypdf"
+version = "3.17.0"
 description = "A pure-python PDF library capable of splitting, merging, cropping, and transforming PDF files"
 optional = false
 python-versions = ">=3.6"
 files = [
-    {file = "PyPDF2-3.0.1.tar.gz", hash = "sha256:a74408f69ba6271f71b9352ef4ed03dc53a31aa404d29b5d31f53bfecfee1440"},
-    {file = "pypdf2-3.0.1-py3-none-any.whl", hash = "sha256:d16e4205cfee272fbdc0568b68d82be796540b1537508cef59388f839c191928"},
+    {file = "pypdf-3.17.0-py3-none-any.whl", hash = "sha256:67f6bb7acd8fdbcf7e7a7d5319d12b8de100f5f94538d6e5647aaec3eb7c7dde"},
+    {file = "pypdf-3.17.0.tar.gz", hash = "sha256:9fab275fea57c9e5b2416035d13d867a459ebe36294a4c39a3d0bb45a7404bad"},
 ]
 
 [package.extras]
-crypto = ["PyCryptodome"]
-dev = ["black", "flit", "pip-tools", "pre-commit (<2.18.0)", "pytest-cov", "wheel"]
+crypto = ["PyCryptodome", "cryptography"]
+dev = ["black", "flit", "pip-tools", "pre-commit (<2.18.0)", "pytest-cov", "pytest-socket", "pytest-timeout", "pytest-xdist", "wheel"]
 docs = ["myst_parser", "sphinx", "sphinx_rtd_theme"]
-full = ["Pillow", "PyCryptodome"]
-image = ["Pillow"]
+full = ["Pillow (>=8.0.0)", "PyCryptodome", "cryptography"]
+image = ["Pillow (>=8.0.0)"]
 
 [[package]]
 name = "pytest"
