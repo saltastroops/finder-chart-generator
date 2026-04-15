@@ -1,6 +1,6 @@
 services:
   fcg:
-    image: registry.salt.ac.za/registryman/finder-chart-generator:${TAG}
+    build: .
     ports:
       - 6789:8000
     restart: always

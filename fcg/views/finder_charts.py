@@ -295,7 +295,7 @@ def _general_properties(
 def _fits_details(
     background_image: str | UploadFile, fits_center: SkyCoord
 ) -> Tuple[str, BinaryIO]:
-    if type(background_image) == str:
+    if type(background_image) is str:
         survey = background_image
         return survey, load_fits(
             survey=survey, fits_center=fits_center, size=10 * u.arcmin

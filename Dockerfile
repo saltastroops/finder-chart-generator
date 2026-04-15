@@ -1,17 +1,17 @@
-FROM python:3.10 AS requirements
+FROM python:3.11 AS requirements
 
 WORKDIR /app
 
 COPY pyproject.toml .
-COPY poetry.lock .
+COPY uv.lock .
 
-RUN curl -sSL https://install.python-poetry.org | python3 -
+COPY --from=ghcr.io/astral-sh/uv:0.11.6 /uv /uvx /bin/
 
-RUN ~/.local/bin/poetry export -f requirements.txt --without-hashes --output requirements.txt
+RUN uv export --format requirements.txt --no-hashes > requirements.txt
 
 # ---
 
-FROM python:3.10
+FROM python:3.11
 
 WORKDIR /app
 

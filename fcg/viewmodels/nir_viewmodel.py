@@ -64,13 +64,13 @@ class NirViewModel(FormBaseViewModel):
             self.reference_star_right_ascension is not None
             and self.reference_star_declination is None
         ):
-            self.errors[
-                "reference_star_declination"
-            ] = "A reference star right ascension requires a declination as well."
+            self.errors["reference_star_declination"] = (
+                "A reference star right ascension requires a declination as well."
+            )
         if (
             self.reference_star_declination is not None
             and self.reference_star_right_ascension is None
         ):
-            self.errors[
-                "reference_star_right_ascension"
-            ] = "A reference star declination requires a right ascension as well."
+            self.errors["reference_star_right_ascension"] = (
+                "A reference star declination requires a right ascension as well."
+            )

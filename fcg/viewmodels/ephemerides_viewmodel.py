@@ -37,6 +37,6 @@ class EphemeridesViewModel(BaseViewModel):
         # the start time must be earlier than the end time
         if "start" not in self.errors and "end" not in self.errors:
             if self.start >= self.end:
-                self.errors[
-                    "__general"
-                ] = "The start time must be earlier than the end time."
+                self.errors["__general"] = (
+                    "The start time must be earlier than the end time."
+                )

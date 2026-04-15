@@ -10,4 +10,4 @@ router = APIRouter()
 def index(request: Request) -> Response:
     vm = IndexViewModel(request)
 
-    return templates.TemplateResponse("index.html", vm.to_dict())
+    return templates.TemplateResponse(request, "index.html", vm.to_dict())

@@ -39,9 +39,9 @@ async def ephemerides(request: Request) -> Response:
                 "dec": e.position.dec.to_value(u.deg),
                 "ra_rate": e.position_rate.ra.to_value(u.arcsec / u.hour),
                 "dec_rate": e.position_rate.dec.to_value(u.arcsec / u.hour),
-                "magnitude": e.magnitude_range.max_magnitude
-                if e.magnitude_range
-                else None,
+                "magnitude": (
+                    e.magnitude_range.max_magnitude if e.magnitude_range else None
+                ),
             }
             for e in ephemerides_
         ]

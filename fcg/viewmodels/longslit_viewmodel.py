@@ -67,30 +67,30 @@ class LongslitViewModel(FormBaseViewModel):
             self.reference_star_right_ascension is not None
             and self.reference_star_declination is None
         ):
-            self.errors[
-                "reference_star_declination"
-            ] = "A reference star right ascension requires a declination as well."
+            self.errors["reference_star_declination"] = (
+                "A reference star right ascension requires a declination as well."
+            )
         if (
             self.reference_star_declination is not None
             and self.reference_star_right_ascension is None
         ):
-            self.errors[
-                "reference_star_right_ascension"
-            ] = "A reference star declination requires a right ascension as well."
+            self.errors["reference_star_right_ascension"] = (
+                "A reference star declination requires a right ascension as well."
+            )
 
         if self.calculate_position_angle:
             if self.position_angle is not None:
-                self.errors[
-                    "position_angle"
-                ] = "The position angle must not be supplied if it is calculated."
+                self.errors["position_angle"] = (
+                    "The position angle must not be supplied if it is calculated."
+                )
             if self.reference_star_right_ascension is None:
-                self.errors[
-                    "reference_star_right_ascension"
-                ] = "The reference star right ascension is required for calculating the position angle."
+                self.errors["reference_star_right_ascension"] = (
+                    "The reference star right ascension is required for calculating the position angle."
+                )
             if self.reference_star_declination is None:
-                self.errors[
-                    "reference_star_declination"
-                ] = "The reference star declination is required for calculating the position angle."
+                self.errors["reference_star_declination"] = (
+                    "The reference star declination is required for calculating the position angle."
+                )
 
         if not self.calculate_position_angle and self.position_angle is None:
             self.errors["position_angle"] = "The position angle is missing."

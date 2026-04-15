@@ -100,9 +100,9 @@ def parse_magnitude_range(
             min_magnitude=min_magnitude, max_magnitude=max_magnitude, bandpass=bandpass
         )
     else:
-        errors[
-            "magnitude_range"
-        ] = "A minimum magnitude, maximum magnitude and bandpass must be specified for a magnitude range."
+        errors["magnitude_range"] = (
+            "A minimum magnitude, maximum magnitude and bandpass must be specified for a magnitude range."
+        )
         return None
 
 
@@ -214,9 +214,9 @@ def parse_nir_bundle_separation(form: FormData, errors: dict[str, str]) -> Angle
 
 def parse_background_image(form: FormData, errors: dict[str, str]) -> str | UploadFile:
     if "image_survey" in form and "custom_fits" in form:
-        errors[
-            "__general"
-        ] = "The image survey and custom FITS file are mutually exclusive."
+        errors["__general"] = (
+            "The image survey and custom FITS file are mutually exclusive."
+        )
         return ""
     elif "image_survey" in form:
         if form.get("image_survey"):

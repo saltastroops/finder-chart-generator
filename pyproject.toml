@@ -1,42 +1,40 @@
-[tool.poetry]
+[project]
 name = "finder-chart-generator"
 version = "0.1.0"
-description = ""
-authors = ["Christian Hettlage <hettlage@saao.ac.za>"]
+description = "Add your description here"
 readme = "README.md"
-packages = [{include = "fcg"}]
+requires-python = ">=3.11"
+dependencies = [
+    "astropy>=7.2.0",
+    "fastapi>=0.135.3",
+    "imephu>=0.11.0",
+    "jinja2>=3.1.6",
+    "python-multipart>=0.0.26",
+    "uvicorn[standard]>=0.44.0",
+]
 
-[tool.poetry.dependencies]
-python = "^3.10"
-fastapi = "0.104.1"
-uvicorn = {extras = ["standard"], version = "^0.23.0"}
-jinja2 = "^3.1.2"
-astropy = "^5.3.1"
-python-multipart = "^0.0.6"
-imephu = "^0.10.1"
-
-[tool.poetry.group.dev.dependencies]
-pytest = "^7.3.1"
-black = {extras = ["d"], version = "^23.3.0"}
-mypy = "^1.2.0"
-httpx = "^0.24.0"
-pytest-regressions = "^2.4.2"
-pillow = "^9.5.0"
-ruff = "^0.0.269"
-types-pillow = "^9.5.0.4"
-bandit = "^1.7.5"
-
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+[dependency-groups]
+dev = [
+    "bandit>=1.9.4",
+    "black[d]>=26.3.1",
+    "httpx>=0.28.1",
+    "mypy>=1.20.1",
+    "pillow>=12.2.0",
+    "pytest>=9.0.3",
+    "pytest-regressions>=2.10.0",
+    "ruff>=0.15.10",
+    "types-pillow>=10.2.0.20240822",
+]
 
 [tool.ruff]
 line-length = 88
+target-version = "py310"
+
+[tool.ruff.lint]
 select = ["E", "F", "B", "I"]
 unfixable = ["B"]
 ignore = ["E203", "E501"]
 dummy-variable-rgx = "^ignore_me$"
-target-version = "py310"
 
-[tool.ruff.pydocstyle]
+[tool.ruff.lint.pydocstyle]
 convention = "numpy"

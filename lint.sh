@@ -1,5 +1,5 @@
-black fcg tests && \
+black --target-version py311 fcg tests && \
 bandit -r fcg && \
-ruff fcg tests && \
+ruff check fcg tests && \
 mypy fcg tests && \
 pytest
