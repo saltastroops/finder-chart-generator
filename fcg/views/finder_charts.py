@@ -17,6 +17,7 @@ from imephu.salt.finder_chart import (
     nir_finder_chart,
     rss_longslit_finder_chart,
     rss_mos_finder_chart,
+    rss_smi_finder_chart,
     salticam_finder_chart,
 )
 from imephu.salt.utils import MosMask
@@ -32,6 +33,7 @@ from fcg.viewmodels.longslit_viewmodel import LongslitViewModel
 from fcg.viewmodels.mos_viewmodel import MosViewModel
 from fcg.viewmodels.nir_viewmodel import NirViewModel
 from fcg.viewmodels.slotmode_viewmodel import SlotmodeViewModel
+from fcg.viewmodels.smi_viewmodel import SmiViewModel
 
 router = APIRouter()
 
@@ -48,6 +50,8 @@ async def generate_finder_chart(request: Request, mode: str) -> Response:
                 return await _longslit(request)
             case "mos":
                 return await _mos(request)
+            case "smi":
+                return await _smi(request)
             case "nir":
                 return await _nir(request)
             case "slotmode":
@@ -199,6 +203,63 @@ async def _mos(request: Request) -> Response:
     )
     finder_chart = rss_mos_finder_chart(
         fits=fits, general=general_properties, mos_mask=mos_mask
+    )
+    return _finder_chart_stream(finder_chart, vm.output_format)
+
+
+async def _smi(request: Request) -> Response:
+    vm = SmiViewModel(request)
+
+    await vm.load()
+
+    if len(vm.errors) > 0:
+        return JSONResponse(
+            {"errors": vm.errors}, status_code=status.HTTP_400_BAD_REQUEST
+        )
+
+    # Get the position angle
+    if (
+        vm.calculate_position_angle
+        and vm.reference_star_right_ascension is not None
+        and vm.reference_star_declination is not None
+    ):
+        position_angle = position_angle_(
+            vm.reference_star_right_ascension,
+            vm.reference_star_declination,
+            vm.right_ascension,
+            vm.declination,
+        )
+        automated_position_angle = True
+    else:
+        position_angle = vm.position_angle
+        automated_position_angle = False
+
+    position = SkyCoord(ra=vm.right_ascension, dec=vm.declination)
+    survey, fits = _fits_details(vm.background_image, position)
+    general_properties = _general_properties(
+        principal_investigator=vm.principal_investigator,
+        proposal_code=vm.proposal_code,
+        target=vm.target,
+        position=position,
+        position_angle=position_angle,
+        automated_position_angle=automated_position_angle,
+        survey=survey,
+    )
+    reference_star = (
+        SkyCoord(
+            ra=vm.reference_star_right_ascension, dec=vm.reference_star_declination
+        )
+        if vm.reference_star_right_ascension is not None
+        else None
+    )
+    smi_barcode = vm.smi_barcode
+    include_fibers = vm.include_fibers
+    finder_chart = rss_smi_finder_chart(
+        fits=fits,
+        general=general_properties,
+        smi_barcode=smi_barcode,
+        reference_star=reference_star,
+        include_fibers=include_fibers,
     )
     return _finder_chart_stream(finder_chart, vm.output_format)
 

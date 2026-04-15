@@ -166,6 +166,25 @@ def parse_mos_mask_file(form: FormData, errors: dict[str, str]) -> UploadFile | 
     return mos_mask_file
 
 
+def parse_smi_barcode(form: FormData, errors: dict[str, str]) -> str:
+    return parse.parse_generic_form_field(
+        form=form,
+        field="smi_barcode",
+        parse_func=lambda s: s,
+        default="",
+        missing_message="The slit mask IFU barcode is missing.",
+        error_id="smi_barcode",
+        errors=errors,
+    )
+
+
+def parse_include_fibers(form: FormData, errors: dict[str, str]) -> bool:
+    if "include_fibers" not in form:
+        return False
+    else:
+        return parse.parse_bool(cast(str, form["include_fibers"]))
+
+
 def parse_reference_star_right_ascension(
     form: FormData, errors: dict[str, str]
 ) -> Angle | None:

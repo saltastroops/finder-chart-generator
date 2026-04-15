@@ -48,6 +48,14 @@ def parse_float(text: str) -> float:
     return float(text)
 
 
+def parse_bool(text: str) -> bool:
+    """
+    Parse a boolean value. A string is parsed as True ifd and only if its lowercase
+    version is equal to "true" or "yes".
+    """
+    return text.lower() in ["true", "yes"]
+
+
 def parse_timestamp(text: str) -> datetime:
     try:
         return datetime.fromtimestamp(float(text), timezone.utc)

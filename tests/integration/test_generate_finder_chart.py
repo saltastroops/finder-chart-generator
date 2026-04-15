@@ -1,4 +1,5 @@
 from io import BytesIO
+from itertools import product
 from typing import BinaryIO, Callable, Tuple, cast
 
 import numpy as np
@@ -36,6 +37,11 @@ def _valid_input(mode: str) -> Tuple[dict[str, str], dict[str, BinaryIO]]:
             del data["right_ascension"]
             del data["declination"]
             files["mos_mask_file"] = open("tests/data/mos_mask.xml", "rb")
+        case "smi":
+            data["reference_star_right_ascension"] = "170.129425288"
+            data["reference_star_declination"] = "-55.48333333333"
+            data["smi_barcode"] = "PF0200N001"
+            data["include_fibers"] = "false"
         case "nir":
             data["reference_star_right_ascension"] = "170.129425288"
             data["reference_star_declination"] = "-55.48333333333"
@@ -138,32 +144,38 @@ def test_generate_for_longslit_with_missing_values(client: TestClient) -> None:
 
 
 @pytest.mark.parametrize(
-    "missing_field, error_contents",
+    "missing_field, error_contents, mode",
     [
-        ("reference_star_right_ascension", ["reference star", "right ascension"]),
-        ("reference_star_declination", ["reference star", "declination"]),
+        (
+            "reference_star_right_ascension",
+            ["reference star", "right ascension"],
+            "longslit",
+        ),
+        ("reference_star_declination", ["reference star", "declination"], "smi"),
     ],
 )
-def test_generate_for_longslit_with_incomplete_reference_star(
-    missing_field: str, error_contents: list[str], client: TestClient
+def test_generate_for_longslit_or_smi_with_incomplete_reference_star(
+    missing_field: str, error_contents: list[str], mode: str, client: TestClient
 ) -> None:
-    data, files = _valid_input("longslit")
+    data, files = _valid_input(mode)
     del data[missing_field]
 
-    response = client.post(_URL, params={"mode": "longslit"}, data=data, files=files)
+    response = client.post(_URL, params={"mode": mode}, data=data, files=files)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     for error_content in error_contents:
         assert error_content in errors[missing_field]
 
 
-@pytest.mark.parametrize("value", ["invalid", "-0.1", "360.1"])
-def test_longslit_with_invalid_reference_star_right_ascension(
-    value: str, client: TestClient
+@pytest.mark.parametrize(
+    "value, mode", product(["invalid", "-0.1", "360.1"], ["longslit", "smi"])
+)
+def test_longslit_or_smi_with_invalid_reference_star_right_ascension(
+    value: str, mode: str, client: TestClient
 ) -> None:
     response = client.post(
         _URL,
-        params={"mode": "longslit"},
+        params={"mode": mode},
         data={"reference_star_right_ascension": value},
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
@@ -171,60 +183,87 @@ def test_longslit_with_invalid_reference_star_right_ascension(
     assert "360" in errors["reference_star_right_ascension"]
 
 
-@pytest.mark.parametrize("value", ["invalid", "-90.1", "90.1"])
-def test_longslit_with_invalid_reference_star_declination(
-    value: str, client: TestClient
+@pytest.mark.parametrize(
+    "value, mode", product(["invalid", "-90.1", "90.1"], ["longslit", "smi"])
+)
+def test_longslit_or_smi_with_invalid_reference_star_declination(
+    mode: str, value: str, client: TestClient
 ) -> None:
     response = client.post(
-        _URL, params={"mode": "longslit"}, data={"reference_star_declination": value}
+        _URL, params={"mode": mode}, data={"reference_star_declination": value}
     )
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert "90" in errors["reference_star_declination"]
 
 
+@pytest.mark.parametrize("mode", ["longslit", "smi"])
 def test_generate_for_longslit_with_calculate_and_position_angle(
+    mode: str,
     client: TestClient,
 ) -> None:
-    data, files = _valid_input("longslit")
+    data, files = _valid_input(mode)
 
     data["calculate_position_angle"] = "calculate"
 
-    response = client.post(_URL, params={"mode": "longslit"}, data=data, files=files)
+    response = client.post(_URL, params={"mode": mode}, data=data, files=files)
     assert response.status_code == status.HTTP_400_BAD_REQUEST
     errors = response.json()["errors"]
     assert "calculated" in errors["position_angle"]
 
 
-def test_generate_for_longslit_with_given_position_angle(
-    client: TestClient, check_image: _CheckImage
+@pytest.mark.parametrize("mode", ["longslit", "smi"])
+def test_generate_for_longslit_or_smi_with_given_position_angle(
+    mode: str, client: TestClient, check_image: _CheckImage
 ) -> None:
-    data, files = _valid_input("longslit")
-    response = client.post(_URL, params={"mode": "longslit"}, data=data, files=files)
+    data, files = _valid_input(mode)
+    response = client.post(_URL, params={"mode": mode}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
     check_image(response.content)
 
 
-def test_generate_for_longslit_with_calculated_position_angle(
-    client: TestClient, check_image: _CheckImage
+@pytest.mark.parametrize("mode", ["longslit", "smi"])
+def test_generate_for_longslit_or_smi_with_calculated_position_angle(
+    mode: str, client: TestClient, check_image: _CheckImage
 ) -> None:
-    data, files = _valid_input("longslit")
+    data, files = _valid_input(mode)
     data["calculate_position_angle"] = "calculate"
     del data["position_angle"]
-    response = client.post(_URL, params={"mode": "longslit"}, data=data, files=files)
+    response = client.post(_URL, params={"mode": mode}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
     check_image(response.content)
 
 
-def test_generate_for_longslit_without_reference_star(
-    client: TestClient, check_image: _CheckImage
+@pytest.mark.parametrize("mode", ["longslit", "smi"])
+def test_generate_for_longslit_or_smi_without_reference_star(
+    mode: str, client: TestClient, check_image: _CheckImage
 ) -> None:
-    data, files = _valid_input("longslit")
+    data, files = _valid_input(mode)
     del data["reference_star_right_ascension"]
     del data["reference_star_declination"]
-    response = client.post(_URL, params={"mode": "longslit"}, data=data, files=files)
+    response = client.post(_URL, params={"mode": mode}, data=data, files=files)
     assert response.status_code == status.HTTP_200_OK
     check_image(response.content)
+
+
+def test_generate_for_smi_with_missing_values(client: TestClient) -> None:
+    missing_values = [
+        ("proposal_code", "proposal code"),
+        ("principal_investigator", "Principal Investigator"),
+        ("target", "target"),
+        ("right_ascension", "right ascension"),
+        ("declination", "declination"),
+        ("smi_barcode", "barcode"),
+        ("include_fibers", "fibers"),
+        ("position_angle", "position angle"),
+    ]
+
+    response = client.post(_URL, params={"mode": "smi"}, data=dict())
+
+    assert response.status_code == status.HTTP_400_BAD_REQUEST
+    errors = response.json()["errors"]
+    for field, missing_info in missing_values:
+        assert missing_info in errors[field]
 
 
 def test_generate_for_mos_with_missing_values(client: TestClient) -> None:

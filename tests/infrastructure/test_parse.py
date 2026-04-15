@@ -6,6 +6,7 @@ from starlette.datastructures import FormData
 
 from fcg.infrastructure.parse import (
     is_float,
+    parse_bool,
     parse_declination,
     parse_float,
     parse_generic_form_field,
@@ -91,6 +92,21 @@ def test_parse_float(text: str, expected: float) -> None:
 def test_parse_invalid_float(text: str) -> None:
     with pytest.raises(ValueError, match="float"):
         parse_float(text)
+
+
+@pytest.mark.parametrize(
+    "text, expected",
+    [
+        ("true", True),
+        ("TRUE", True),
+        ("Yes", True),
+        ("", False),
+        ("true!", False),
+        ("1", False),
+    ],
+)
+def test_parse_bool(text: str, expected: bool) -> None:
+    assert parse_bool(text) == expected
 
 
 @pytest.mark.parametrize(
