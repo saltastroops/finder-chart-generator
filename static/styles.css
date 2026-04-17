@@ -9,3 +9,7 @@
     align-content: center;
     align-items: center;
 }
+
+#tab-content div {
+    margin-bottom: 0.75rem;
+}
