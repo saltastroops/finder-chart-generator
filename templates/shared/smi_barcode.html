@@ -1,0 +1,17 @@
+<div class="field" data-name="smi_barcode">
+    <label for="smi_barcode" class="label">Slit mask IFU</label>
+    <div class="select">
+        <select id="smi_barcode"
+                name="smi_barcode"
+                type="checkbox"
+        >
+            {% for barcode in ["PF0200N001"] %}
+            <option value="{{ barcode }}" {% if smi_barcode == barcode %}selected{% endif %}>
+                {{ barcode }}
+            </option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="help">Barcode of the slit mask IFU</div>
+    <div class="help is-danger"></div>
+</div>
