@@ -8,7 +8,7 @@
                    placeholder="{{ placeholder }}" class="input">
         </div>
         {% if help %}
-            <div class="help">{{ help }}</div>
+            <div class="help">{{ help|safe }}</div>
         {% endif %}
         <div class="help is-danger"></div>
     </div>
