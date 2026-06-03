@@ -5,7 +5,7 @@
                 name="smi_barcode"
                 type="checkbox"
         >
-            {% for barcode in ["PF0200N001"] %}
+            {% for barcode in ["PF0200N001", "PF0300N001"] %}
             <option value="{{ barcode }}" {% if smi_barcode == barcode %}selected{% endif %}>
                 {{ barcode }}
             </option>
