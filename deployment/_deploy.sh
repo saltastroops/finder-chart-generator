@@ -2,7 +2,7 @@
 
 # Usage: ssh user@remote bash -s -- remote_project_dir < _deploy.sh
 
-cd "$1" || { echo "Directory not found: %1" >&2; exit 1; }
+cd "$1" || { echo "Directory not found: $1" >&2; exit 1; }
 
 if [[ "$(git branch --show-current)" != "main" ]]; then
   echo "The main branch is not checked out." >&2
