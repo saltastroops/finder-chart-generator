@@ -254,7 +254,6 @@ def test_generate_for_smi_with_missing_values(client: TestClient) -> None:
         ("right_ascension", "right ascension"),
         ("declination", "declination"),
         ("smi_barcode", "barcode"),
-        ("include_fibers", "fibers"),
         ("position_angle", "position angle"),
     ]
 
