@@ -8,6 +8,9 @@ from starlette.datastructures import FormData
 T = TypeVar("T")
 
 
+_BEWARE_OF_DASH = "When copying values from another application, make sure the minus sign is not a dash."
+
+
 def parse_generic_form_field(
     form: FormData,
     field: str,
@@ -70,7 +73,7 @@ def parse_right_ascension(text: str) -> Angle:
 
     The value is returned as an AstroPy Angle instance.
     """
-    error = "The right ascension must be an angle between 0 and 360 degrees."
+    error = f"The right ascension must be an angle between 0 and 360 degrees. {_BEWARE_OF_DASH}"
     if is_float(text):
         text = text + "d"
     try:
@@ -88,7 +91,7 @@ def parse_declination(text: str) -> Angle:
 
     The value is returned as an AstroPy Angle instance
     """
-    error = "The declination must be an angle between -90 and 90 degrees."
+    error = f"The declination must be an angle between -90 and 90 degrees. {_BEWARE_OF_DASH}"
     if is_float(text):
         text = text + "d"
     try:
@@ -124,7 +127,7 @@ def parse_position_angle(text: str) -> Angle:
 
     The value is returned as an AstroPy Angle instance
     """
-    error = "The slit width must be an angle between -180 and +180 degrees."
+    error = f"The slit width must be an angle between -180 and +180 degrees. {_BEWARE_OF_DASH}"
     if is_float(text):
         text = text + "d"
     try:
