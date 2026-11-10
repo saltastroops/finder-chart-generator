@@ -14,6 +14,7 @@ class NirViewModel(FormBaseViewModel):
         super().__init__(request)
         self.right_ascension: Angle = Angle("0deg")
         self.declination: Angle = Angle("0deg")
+        self.equinox: float = 2000
         self.reference_star_right_ascension: Angle | None = None
         self.reference_star_declination: Angle | None = None
         self.nir_bundle_separation: Angle = Angle("0deg")
@@ -44,6 +45,9 @@ class NirViewModel(FormBaseViewModel):
             self.reference_star_declination = parse.parse_reference_star_declination(
                 form, self.errors
             )
+
+        # equinox
+        self.equinox = parse.parse_equinox(form, self.errors)
 
         # bundle separation
         self.nir_bundle_separation = parse.parse_nir_bundle_separation(

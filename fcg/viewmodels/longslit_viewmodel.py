@@ -14,6 +14,7 @@ class LongslitViewModel(FormBaseViewModel):
         super().__init__(request)
         self.right_ascension: Angle = Angle("0deg")
         self.declination: Angle = Angle("0deg")
+        self.equinox: float = 2000
         self.reference_star_right_ascension: Angle | None = None
         self.reference_star_declination: Angle | None = None
         self.position_angle: Angle | None = None
@@ -33,6 +34,9 @@ class LongslitViewModel(FormBaseViewModel):
 
         # declination
         self.declination = parse.parse_declination(form, self.errors)
+
+        # equinox
+        self.equinox = parse.parse_equinox(form, self.errors)
 
         # reference star right ascension
         if cast(str, form.get("reference_star_right_ascension", "")).strip():

@@ -13,6 +13,7 @@ class SlotmodeViewModel(FormBaseViewModel):
         self.right_ascension: Angle = Angle("0deg")
         self.declination: Angle = Angle("0deg")
         self.position_angle: Angle = Angle("0deg")
+        self.equinox: float = 2000
         self.background_image: str | UploadFile = ""
         self.output_format: OutputFormat = "pdf"
         self.errors: dict[str, str] = dict()
@@ -27,6 +28,9 @@ class SlotmodeViewModel(FormBaseViewModel):
 
         # declination
         self.declination = parse.parse_declination(form, self.errors)
+
+        # equinox
+        self.equinox = parse.parse_equinox(form, self.errors)
 
         # position angle
         self.position_angle = parse.parse_position_angle(form, self.errors)

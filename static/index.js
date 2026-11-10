@@ -36,6 +36,9 @@ function switchTab(event) {
       inputElement.value = data[name];
     }
   }
+
+  // Display the equinox.
+  displayEquinox();
 }
 
 function selectTab(selectedTab) {
@@ -204,6 +207,16 @@ function addErrors() {
   }
 }
 
+function displayEquinox() {
+  document.querySelectorAll("span.equinox").forEach(el => {
+    let equinox = document.getElementById("equinox").value;
+    if (!equinox || equinox.trim() === "") {
+      equinox = "2000";
+    }
+    el.innerText = `(J${equinox})`;
+  })
+}
+
 function init() {
   // Add an event listener to the tabs for tab-switching
   tabs.forEach(tab => tab.addEventListener("click", switchTab));
@@ -228,6 +241,10 @@ function init() {
 
   // Select image survey as the FITS file option
   selectFitsOption("image_survey_element");
+
+  // Display the equinox.
+  displayEquinox();
+  document.getElementById("equinox").addEventListener("keyup", displayEquinox);
 }
 
 init();

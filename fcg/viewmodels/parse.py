@@ -7,6 +7,7 @@ from starlette.datastructures import FormData, UploadFile
 
 from fcg.infrastructure import parse
 from fcg.infrastructure.types import MagnitudeRange, OutputFormat
+from fcg.utils import coordinates
 
 
 def parse_proposal_code(form: FormData, errors: dict[str, str]) -> str:
@@ -127,6 +128,19 @@ def parse_declination(form: FormData, errors: dict[str, str]) -> Angle:
         missing_message="The declination is missing.",
         error_id="declination",
         errors=errors,
+    )
+
+
+def parse_equinox(form: FormData, errors: dict[str, str]) -> float:
+    return parse.parse_generic_form_field(
+        form=form,
+        field="equinox",
+        parse_func=parse.parse_float,
+        default=2000,
+        missing_message="The equinox is missing.",
+        error_id="equinox",
+        errors=errors,
+        error_on_default=False,
     )
 
 
@@ -328,6 +342,7 @@ def _is_position_covered_by_survey(form: FormData, survey: str) -> bool:
             cast(str, form.get("right_ascension", ""))
         )
         declination = parse.parse_declination(cast(str, form.get("declination", "")))
+        equinox = parse.parse_float(cast(str, form.get("equinox", "")))
     except ValueError:
         return True
-    return is_covering_position(survey, SkyCoord(ra=right_ascension, dec=declination))
+    return is_covering_position(survey, coordinates(ra=right_ascension, dec=declination, equinox=equinox))

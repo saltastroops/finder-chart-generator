@@ -1,11 +1,14 @@
 <!-- text input field -->
 
-{% macro input(name, label, value, help="") %}
+{% macro input(name, label, value, default, help="") %}
     <div class="field" data-name="{{ name }}">
-        <label for="{{ name }}" class="label">{{ label }}</label>
+        <label for="{{ name }}" class="label">{{ label|safe }}</label>
         <div class="control">
-            <input id="{{ name }}" name="{{ name }}" value="{{ value }}"
-                   placeholder="{{ placeholder }}" class="input">
+            <input id="{{ name }}"
+                   name="{{ name }}"
+                   value="{% if value %}{{ value }}{% else %}{{ default }}{% endif %}"
+                   placeholder="{{ placeholder }}"
+                   class="input">
         </div>
         {% if help %}
             <div class="help">{{ help|safe }}</div>

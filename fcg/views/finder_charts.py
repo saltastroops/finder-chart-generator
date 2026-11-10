@@ -27,6 +27,7 @@ from starlette.datastructures import UploadFile
 from starlette.responses import StreamingResponse
 
 from fcg.infrastructure.types import OutputFormat
+from fcg.utils import coordinates
 from fcg.viewmodels.hrs_viewmodel import HrsViewModel
 from fcg.viewmodels.imaging_viewmodel import ImagingViewModel
 from fcg.viewmodels.longslit_viewmodel import LongslitViewModel
@@ -84,7 +85,7 @@ async def _hrs(request: Request) -> Response:
             {"errors": vm.errors}, status_code=status.HTTP_400_BAD_REQUEST
         )
 
-    position = SkyCoord(ra=vm.right_ascension, dec=vm.declination)
+    position = coordinates(ra=vm.right_ascension, dec=vm.declination, equinox=vm.equinox)
     survey, fits = _fits_details(vm.background_image, position)
     general_properties = _general_properties(
         principal_investigator=vm.principal_investigator,
@@ -109,7 +110,7 @@ async def _imaging(request: Request) -> Response:
             {"errors": vm.errors}, status_code=status.HTTP_400_BAD_REQUEST
         )
 
-    position = SkyCoord(ra=vm.right_ascension, dec=vm.declination)
+    position = coordinates(ra=vm.right_ascension, dec=vm.declination, equinox=vm.equinox)
     survey, fits = _fits_details(vm.background_image, position)
     general_properties = _general_properties(
         principal_investigator=vm.principal_investigator,
@@ -152,7 +153,7 @@ async def _longslit(request: Request) -> Response:
         position_angle = vm.position_angle
         automated_position_angle = False
 
-    position = SkyCoord(ra=vm.right_ascension, dec=vm.declination)
+    position = coordinates(ra=vm.right_ascension, dec=vm.declination, equinox=vm.equinox)
     survey, fits = _fits_details(vm.background_image, position)
     general_properties = _general_properties(
         principal_investigator=vm.principal_investigator,
@@ -164,8 +165,8 @@ async def _longslit(request: Request) -> Response:
         survey=survey,
     )
     reference_star = (
-        SkyCoord(
-            ra=vm.reference_star_right_ascension, dec=vm.reference_star_declination
+        coordinates(
+            ra=vm.reference_star_right_ascension, dec=vm.reference_star_declination, equinox=vm.equinox
         )
         if vm.reference_star_right_ascension is not None
         else None
@@ -234,7 +235,7 @@ async def _smi(request: Request) -> Response:
         position_angle = vm.position_angle
         automated_position_angle = False
 
-    position = SkyCoord(ra=vm.right_ascension, dec=vm.declination)
+    position = coordinates(ra=vm.right_ascension, dec=vm.declination, equinox=vm.equinox)
     survey, fits = _fits_details(vm.background_image, position)
     general_properties = _general_properties(
         principal_investigator=vm.principal_investigator,
@@ -246,8 +247,8 @@ async def _smi(request: Request) -> Response:
         survey=survey,
     )
     reference_star = (
-        SkyCoord(
-            ra=vm.reference_star_right_ascension, dec=vm.reference_star_declination
+        coordinates(
+            ra=vm.reference_star_right_ascension, dec=vm.reference_star_declination, equinox=vm.equinox
         )
         if vm.reference_star_right_ascension is not None
         else None
@@ -275,13 +276,13 @@ async def _nir(request: Request) -> Response:
         )
 
     reference_star = (
-        SkyCoord(
-            ra=vm.reference_star_right_ascension, dec=vm.reference_star_declination
+        coordinates(
+            ra=vm.reference_star_right_ascension, dec=vm.reference_star_declination, equinox=vm.equinox
         )
         if vm.reference_star_right_ascension is not None
         else None
     )
-    position = SkyCoord(ra=vm.right_ascension, dec=vm.declination)
+    position = coordinates(ra=vm.right_ascension, dec=vm.declination, equinox=vm.equinox)
     if reference_star:
         fits_center = reference_star
     else:
@@ -314,7 +315,7 @@ async def _slotmode(request: Request) -> Response:
             {"errors": vm.errors}, status_code=status.HTTP_400_BAD_REQUEST
         )
 
-    position = SkyCoord(ra=vm.right_ascension, dec=vm.declination)
+    position = coordinates(ra=vm.right_ascension, dec=vm.declination, equinox=vm.equinox)
     survey, fits = _fits_details(vm.background_image, position)
     general_properties = _general_properties(
         principal_investigator=vm.principal_investigator,
