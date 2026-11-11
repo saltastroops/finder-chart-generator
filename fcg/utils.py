@@ -7,5 +7,5 @@ def coordinates(ra: Angle, dec: Angle, equinox: float) -> SkyCoord:
         return SkyCoord(ra, dec)
 
     # Otherwise use FK5 with the correct equinox and then convert to ICRS.
-    c = SkyCoord(FK5(ra="0d", dec="0d", equinox=f"J{equinox}"))
+    c = SkyCoord(FK5(ra=ra, dec=dec, equinox=f"J{equinox}"))
     return c.transform_to(ICRS())
