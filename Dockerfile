@@ -1,4 +1,4 @@
-FROM python:3.11 AS requirements
+FROM python:3.14 AS requirements
 
 WORKDIR /app
 
@@ -11,7 +11,7 @@ RUN uv export --format requirements.txt --no-hashes > requirements.txt
 
 # ---
 
-FROM python:3.11
+FROM python:3.14
 
 WORKDIR /app
 
