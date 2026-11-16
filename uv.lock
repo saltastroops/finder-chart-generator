@@ -744,7 +744,7 @@ dev = [
 requires-dist = [
     { name = "astropy", specifier = ">=7.2.0" },
     { name = "fastapi", specifier = ">=0.135.3" },
-    { name = "imephu", specifier = ">=0.13.1" },
+    { name = "imephu", specifier = ">=0.13.2" },
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "numpy", specifier = "<2.4.0" },
     { name = "python-multipart", specifier = ">=0.0.26" },
@@ -1025,7 +1025,7 @@ wheels = [
 
 [[package]]
 name = "imephu"
-version = "0.13.1"
+version = "0.13.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "astropy" },
@@ -1039,9 +1039,9 @@ dependencies = [
     { name = "requests" },
     { name = "typer" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/7b/e4/1913b2de99a0d363f2cf72e6b9699ebc547c594947486ea5fd6148a42555/imephu-0.13.1.tar.gz", hash = "sha256:6e6df88162cb1c8f8e66899a53b5849dbfe05873d4bf9e616f22e33532f86f11", size = 131579, upload-time = "2026-11-10T15:57:42.003Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/68/7c/83b2b08a559edda5314e9e988ecea040ff0dcb5bab65b8e6673365895046/imephu-0.13.2.tar.gz", hash = "sha256:f88311dcc7ccce9d658f13bd7a559a8492c9a87fe2a94f73033cb2bfc8819b89", size = 131606, upload-time = "2026-11-13T08:00:49.31Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/79/cc/c9c27778048f071909ff16a7b55ef0a3e879d48f442e6bd0f20eeace9979/imephu-0.13.1-py3-none-any.whl", hash = "sha256:198120ba60258fb937f4d4172db34505912ca540b2d270bcce6727c41b2cd9e8", size = 200331, upload-time = "2026-11-10T15:57:40.599Z" },
+    { url = "https://files.pythonhosted.org/packages/d0/a8/db27e6b68aca17bb732ea5a1a84da384ce548a32276b93ab3b9a32e063de/imephu-0.13.2-py3-none-any.whl", hash = "sha256:0e8759684fef686558aecf6d477f8d1309e538ca51b4661ab7f8ba295aae5d70", size = 200346, upload-time = "2026-11-13T08:00:47.391Z" },
 ]
 
 [[package]]
