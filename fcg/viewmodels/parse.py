@@ -131,14 +131,14 @@ def parse_declination(form: FormData, errors: dict[str, str]) -> Angle:
     )
 
 
-def parse_equinox(form: FormData, errors: dict[str, str]) -> float:
+def parse_equinox(form: FormData, errors: dict[str, str], field_name: str="equinox") -> float:
     return parse.parse_generic_form_field(
         form=form,
-        field="equinox",
+        field=field_name,
         parse_func=parse.parse_float,
         default=2000,
         missing_message="The equinox is missing.",
-        error_id="equinox",
+        error_id=field_name,
         errors=errors,
         error_on_default=False,
     )
